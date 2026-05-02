@@ -74,7 +74,6 @@ export default function AICanvasPage() {
 
   const isReady = status === 'ready'
   const isBuilding = status === 'building'
-  const isStreaming = status === 'streaming'
   const optionCount = (() => {
     const stratMod = modules.find(m => m.type === 'strategy_options')
     if (!stratMod) return 0

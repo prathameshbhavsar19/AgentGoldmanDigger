@@ -2,18 +2,19 @@
 
 Polished one-liners only; raw ReAct tokens (Action/Observation) are captured by
 Langfuse for internal tracing but never forwarded to the frontend.
+
+Uses AsyncCallbackHandler so all hooks are `async def` — this guarantees that
+`await push_event(...)` works even when LangGraph executes tools in a thread pool
+(sync BaseCallbackHandler hooks called from threads cannot await coroutines).
 """
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
-import re
 import time
-from typing import Any
 from uuid import UUID
 
-from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.callbacks import AsyncCallbackHandler
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +54,12 @@ _PIPELINE_STEPS = [
 ]
 
 
-class StreamingActivityCallback(BaseCallbackHandler):
-    """Converts LangChain events → structured WS activity events pushed to the job queue."""
+class StreamingActivityCallback(AsyncCallbackHandler):
+    """Converts LangChain events → structured WS activity events pushed to the job queue.
+
+    Inherits AsyncCallbackHandler so all hooks are async — safe to await push_event
+    even when LangGraph invokes callbacks from a thread-pool executor.
+    """
 
     def __init__(self, job_id: str, push_fn) -> None:
         super().__init__()
@@ -63,28 +68,20 @@ class StreamingActivityCallback(BaseCallbackHandler):
         self._step_idx = 0
         self._current_step_id: str | None = None
         self._tool_call_count = 0
-        self._loop = None
 
     # ─── helpers ───────────────────────────────────────────────────────────
 
-    def _get_loop(self):
+    async def _emit(self, event: dict) -> None:
         try:
-            return asyncio.get_running_loop()
-        except RuntimeError:
-            return None
+            await self._push(event)
+        except Exception as exc:
+            logger.warning("Failed to push activity event %s: %s", event.get("type"), exc)
 
-    def _emit(self, event: dict) -> None:
-        loop = self._get_loop()
-        if loop and loop.is_running():
-            asyncio.ensure_future(self._push(event))
-        else:
-            logger.debug("No running loop; event dropped: %s", event.get("type"))
-
-    def _advance_step(self) -> None:
+    async def _advance_step(self) -> None:
         if self._step_idx < len(_PIPELINE_STEPS):
             step_id, label = _PIPELINE_STEPS[self._step_idx]
             self._current_step_id = step_id
-            self._emit(
+            await self._emit(
                 {
                     "type": "activity_step_started",
                     "stepId": step_id,
@@ -97,17 +94,17 @@ class StreamingActivityCallback(BaseCallbackHandler):
 
     # ─── LangChain hooks ───────────────────────────────────────────────────
 
-    def on_chain_start(self, serialized, inputs, **kwargs) -> None:
+    async def on_chain_start(self, serialized, inputs, **kwargs) -> None:
         if self._step_idx == 0:
-            self._emit(
+            await self._emit(
                 {
                     "type": "analysis_started",
                     "ts": int(time.time() * 1000),
                 }
             )
-            self._advance_step()
+            await self._advance_step()
 
-    def on_tool_start(
+    async def on_tool_start(
         self, serialized: dict, input_str: str, *, run_id: UUID, **kwargs
     ) -> None:
         tool_name = serialized.get("name", "")
@@ -117,29 +114,29 @@ class StreamingActivityCallback(BaseCallbackHandler):
         # Advance pipeline step on certain tool transitions
         if tool_name in ("portfolio_concentration_analyzer", "fund_overlap_analyzer", "cost_drag_analyzer"):
             if self._step_idx == 1:
-                self._advance_step()
+                await self._advance_step()
         elif tool_name in ("macro_indicators", "central_bank_outlook", "index_snapshot"):
             if self._step_idx <= 2:
                 while self._step_idx < 3:
-                    self._advance_step()
+                    await self._advance_step()
         elif tool_name in ("market_news_search", "web_search", "company_news"):
             if self._step_idx <= 3:
                 while self._step_idx < 4:
-                    self._advance_step()
+                    await self._advance_step()
         elif tool_name in ("historical_stress_test",):
             if self._step_idx <= 5:
                 while self._step_idx < 6:
-                    self._advance_step()
+                    await self._advance_step()
         elif tool_name in ("fund_factsheet_lookup", "hidden_charge_scanner"):
             if self._step_idx <= 6:
                 while self._step_idx < 7:
-                    self._advance_step()
+                    await self._advance_step()
         elif tool_name in ("goal_gap_calculator",):
             if self._step_idx <= 7:
                 while self._step_idx < 8:
-                    self._advance_step()
+                    await self._advance_step()
 
-        self._emit(
+        await self._emit(
             {
                 "type": "activity_thought_delta",
                 "stepId": self._current_step_id or "step-1",
@@ -148,11 +145,11 @@ class StreamingActivityCallback(BaseCallbackHandler):
             }
         )
 
-    def on_tool_end(self, output: str, *, run_id: UUID, **kwargs) -> None:
+    async def on_tool_end(self, output: str, *, run_id: UUID, **kwargs) -> None:
         pass  # Langfuse captures full output; we skip forwarding raw observations
 
-    def on_tool_error(self, error, *, run_id: UUID, **kwargs) -> None:
-        self._emit(
+    async def on_tool_error(self, error, *, run_id: UUID, **kwargs) -> None:
+        await self._emit(
             {
                 "type": "activity_thought_delta",
                 "stepId": self._current_step_id or "step-1",
@@ -161,9 +158,9 @@ class StreamingActivityCallback(BaseCallbackHandler):
             }
         )
 
-    def on_llm_start(self, serialized, prompts, **kwargs) -> None:
+    async def on_llm_start(self, serialized, prompts, **kwargs) -> None:
         if self._step_idx >= len(_PIPELINE_STEPS):
-            self._emit(
+            await self._emit(
                 {
                     "type": "activity_thought_delta",
                     "stepId": "step-9",
@@ -172,13 +169,13 @@ class StreamingActivityCallback(BaseCallbackHandler):
                 }
             )
 
-    def on_agent_finish(self, finish, **kwargs) -> None:
+    async def on_agent_finish(self, finish, **kwargs) -> None:
         # Advance any remaining steps up to synthesis
         while self._step_idx < len(_PIPELINE_STEPS):
-            self._advance_step()
+            await self._advance_step()
 
         if self._current_step_id:
-            self._emit(
+            await self._emit(
                 {
                     "type": "activity_step_completed",
                     "stepId": self._current_step_id,

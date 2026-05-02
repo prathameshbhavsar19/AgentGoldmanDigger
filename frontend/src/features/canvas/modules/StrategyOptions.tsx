@@ -7,10 +7,9 @@
  *  - Glossary terms get dotted underline + tooltip
  *  - Framer-motion stagger on entry
  */
-import { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
-import Card from '../../../components/ui/Card'
 import type { GlossaryTerm } from './Glossary'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -149,7 +148,7 @@ function PlainText({ text, glossaryTerms }: { text: string; glossaryTerms?: Glos
     return <span>{text}</span>
   }
   // Replace jargon terms with tooltip-wrapped spans
-  const parts: JSX.Element[] = []
+  const parts: React.ReactElement[] = []
   let remaining = text
   let key = 0
 

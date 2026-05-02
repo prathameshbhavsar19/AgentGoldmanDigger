@@ -1,0 +1,6 @@
+assetName,assetSymbol,assetType,quantity,marketValue,currency
+Apple Inc.,AAPL,stock,10,1850.00,USD
+Vanguard S&P 500 ETF,VOO,etf,5,2150.00,USD
+Tesla Inc.,TSLA,stock,8,1600.00,USD
+US Treasury Bond,,bond,,5000.00,USD
+Cash,,cash,,2000.00,USD

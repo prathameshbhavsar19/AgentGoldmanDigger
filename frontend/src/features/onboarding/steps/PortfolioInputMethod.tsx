@@ -15,12 +15,14 @@ import { clsx } from 'clsx'
 type Method = 'upload' | 'manual' | 'broker' | 'skip'
 
 // ── Manual entry schema ────────────────────────────────────
+// HTML inputs always produce strings; we keep them as strings in the form
+// and convert to numbers only when submitting.
 const holdingSchema = z.object({
   assetName:   z.string().min(1, 'Name required'),
   assetSymbol: z.string().optional(),
   assetType:   z.string().min(1, 'Type required'),
-  quantity:    z.preprocess((v) => (v === '' ? undefined : Number(v)), z.number().positive().optional()),
-  marketValue: z.preprocess((v) => (v === '' ? undefined : Number(v)), z.number().positive().optional()),
+  quantity:    z.string().optional(),
+  marketValue: z.string().optional(),
   currency:    z.string().min(1, 'Currency required'),
 })
 
@@ -31,7 +33,7 @@ const manualSchema = z.object({
 type ManualFormValues = z.infer<typeof manualSchema>
 
 const EMPTY_HOLDING: ManualFormValues['holdings'][number] = {
-  assetName: '', assetSymbol: '', assetType: 'stock', quantity: undefined, marketValue: undefined, currency: 'USD',
+  assetName: '', assetSymbol: '', assetType: 'stock', quantity: '', marketValue: '', currency: 'USD',
 }
 
 const ASSET_TYPES = ['stock', 'etf', 'mutual_fund', 'bond', 'crypto', 'cash', 'other']
@@ -53,7 +55,11 @@ function ManualEntryTable({
 
   const { mutate, isPending, error: submitError } = useMutation({
     mutationFn: (data: ManualFormValues) =>
-      submitManualPortfolio(sessionId, data.holdings as ManualHolding[]),
+      submitManualPortfolio(sessionId, data.holdings.map(h => ({
+        ...h,
+        quantity:    h.quantity    ? Number(h.quantity)    : undefined,
+        marketValue: h.marketValue ? Number(h.marketValue) : undefined,
+      })) as ManualHolding[]),
     onSuccess: onDone,
   })
 

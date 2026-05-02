@@ -73,15 +73,26 @@ function startMockPython(port: number): Promise<void> {
 
     wss.on("connection", (ws: WebSocket, _req: http.IncomingMessage, jobId: string) => {
       activeWs.set(jobId, ws);
-      // Emit a minimal timeline
+      // Emit a minimal timeline using the new python_analysis_completed format
+      // Node will trigger its canvas LLM (fallback path when no ANTHROPIC_API_KEY)
       const timeline = [
         { event_type: "analysis_started", delay_ms: 50 },
-        { event_type: "activity_step_started", stepId: "s1", label: "Reading profile", phase: "profile", delay_ms: 80 },
+        { event_type: "activity_step_started", stepId: "s1", label: "Reading profile", phase: "thinking", delay_ms: 80 },
         { event_type: "activity_thought_delta", stepId: "s1", delta: "Analyzing...", delay_ms: 80 },
         { event_type: "activity_step_completed", stepId: "s1", summary: "Done.", delay_ms: 80 },
-        { event_type: "canvas_module_ready", module: { type: "goal_summary", priority: 1, props: { goal: "Test" } }, delay_ms: 100 },
-        { event_type: "canvas_module_ready", module: { type: "strategy_options", priority: 3, props: { options: [] } }, delay_ms: 100 },
-        { event_type: "analysis_completed", jobId, delay_ms: 100 },
+        {
+          event_type: "python_analysis_completed",
+          type: "python_analysis_completed",
+          delay_ms: 200,
+          user_summary_md: "## Test\nA test analysis.",
+          portfolio_diagnosis_md: "No existing portfolio.",
+          options: [
+            { id: "opt-1", title: "Conservative", risk_level: "Low", best_for: "Test user", content_md: "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Index fund | 60% |\n| Bonds | 40% |" },
+            { id: "opt-2", title: "Balanced", risk_level: "Moderate", best_for: "Moderate user", content_md: "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Equity | 70% |\n| Bonds | 30% |" },
+            { id: "opt-3", title: "Growth", risk_level: "Medium-High", best_for: "Growth user", content_md: "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Equity | 90% |\n| Cash | 10% |" },
+          ],
+          hidden_disclosures: ["Expense ratio 0.03%/yr on index funds."],
+        },
       ];
       let offset = 0;
       timeline.forEach(({ delay_ms, ...payload }) => {
@@ -145,18 +156,18 @@ describe("Strategy flow integration", () => {
         }
       });
       ws.on("error", reject);
-      setTimeout(() => { ws.close(); resolve(); }, 5000);
+      setTimeout(() => { ws.close(); resolve(); }, 12000);
     });
 
     expect(received).toContain("analysis_started");
     expect(received).toContain("activity_step_started");
     expect(received).toContain("canvas_module_ready");
     expect(received).toContain("analysis_completed");
-  });
+  }, 15000);
 
   it("GET /api/strategy/report/:jobId returns canvas with disclaimer", async () => {
-    // Wait for report to be persisted
-    await new Promise(r => setTimeout(r, 500));
+    // Wait for report to be persisted (canvas LLM is async, allow extra time)
+    await new Promise(r => setTimeout(r, 4000));
     const res = await request(nodeServer).get(`/api/strategy/report/${jobId}`);
     expect(res.status).toBe(200);
     const modules = res.body.modules as Array<{ type: string }>;
