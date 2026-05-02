@@ -152,13 +152,16 @@ nohup.out
 
 # ------------------------------------------------------------------------------
 
-# Cursor (https://cursor.com) — local IDE / agent scratch (VS Code–compatible editor)
-
-# Version-control .cursor/rules/ or project docs if your team shares them.
-
+# Cursor (https://cursor.com) — IDE local config, caches, and agent scratch
 # ------------------------------------------------------------------------------
+.cursor/
+.cursorignore
+.cursorrules
 
-.cursor/debug/
-context/*
+# VS Code
+.vscode/
+
+# Context docs (large PDFs / raw planning notes — not source code)
+context/
 
 
