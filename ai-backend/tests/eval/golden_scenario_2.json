@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "scenario": 2,
+    "description": "Panic crash scenario, existing mixed portfolio down -12%",
+    "created": "2026-05-02",
+    "prompt_version": "v1"
+  },
+  "tolerance_checks": {
+    "min_options": 3,
+    "required_risk_levels": ["Low", "Moderate"],
+    "hidden_disclosures_non_empty": true,
+    "causal_chain_regex": "(stress|drawdown|panic|crash|market|decline|portfolio)",
+    "required_tool_buckets": ["market_data", "portfolio_analytics", "macro"],
+    "required_specific_tools": ["historical_stress_test", "portfolio_concentration_analyzer", "market_news_search"]
+  },
+  "sample_output": {
+    "user_summary_md": "## Your Situation\n\nYour portfolio is down 12% and you're worried about further declines. This is a stressful moment, and your instinct to act is understandable — but let's look at the data before deciding anything...",
+    "portfolio_diagnosis_md": "Your portfolio shows elevated concentration in growth equities, which historically draw down 30-50% in bear markets. The current -12% move, while painful, is within normal correction territory...",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Hold and Rebalance Calmly",
+        "risk_level": "Moderate",
+        "best_for": "Investors who can stomach further volatility for long-term gains",
+        "content_md": "### Asset Allocation\nMaintain current allocation but trim overweight positions..."
+      },
+      {
+        "id": "opt-2",
+        "title": "Defensive Shift — Reduce Equity",
+        "risk_level": "Low",
+        "best_for": "Sleep-at-night investors who need to reduce drawdown risk now",
+        "content_md": "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Equity | 50% |\n| Bonds | 30% |\n| Cash/Gold | 20% |..."
+      },
+      {
+        "id": "opt-3",
+        "title": "What If You Do Nothing",
+        "risk_level": "Medium-High",
+        "best_for": "Those who believe in long-term mean reversion",
+        "content_md": "Historical data shows that staying invested through downturns has rewarded patient investors..."
+      }
+    ],
+    "hidden_disclosures": [
+      "Selling equity funds within lock-in period may incur exit loads.",
+      "Short-term capital gains tax applies if positions are sold within 12 months.",
+      "Switching between funds may trigger taxable events even in tax-advantaged accounts."
+    ]
+  }
+}

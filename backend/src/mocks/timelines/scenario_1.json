@@ -1,0 +1,55 @@
+[
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "Reviewing your goals, age range, and monthly capacity…" },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Profile analysed — persona: first-time investor." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-3", "label": "Scanning current macro landscape…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 300, "stepId": "step-3", "delta": "Checking CPI 3.2%, Fed rate 5.25%, S&P 500 snapshot…" },
+  { "event_type": "activity_step_completed", "delay_ms": 350, "stepId": "step-3", "summary": "Macro: moderately favourable for index investing." },
+  { "event_type": "activity_step_started", "delay_ms": 400, "stepId": "step-4", "label": "Searching latest financial news…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 450, "stepId": "step-4", "delta": "Searching for news on index funds for beginner investors…" },
+  { "event_type": "activity_step_started", "delay_ms": 500, "stepId": "step-7", "label": "Reading fund factsheets for hidden charges…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 600, "stepId": "step-7", "delta": "Checking expense ratios on VOO (0.03%), FXAIX (0.015%), BND (0.03%)…" },
+  { "event_type": "activity_step_completed", "delay_ms": 650, "stepId": "step-7", "summary": "Factsheets reviewed — all low cost." },
+  { "event_type": "activity_step_started", "delay_ms": 700, "stepId": "step-8", "label": "Projecting whether your goal is reachable…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 750, "stepId": "step-8", "delta": "Running goal_gap_calculator: $300/mo, 10yr, 7% return…" },
+  { "event_type": "activity_step_started", "delay_ms": 800, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 900, "stepId": "step-9", "delta": "Synthesising 3 options: Conservative, Balanced, Growth-Focused…" },
+  { "event_type": "activity_step_completed", "delay_ms": 950, "stepId": "step-9", "summary": "3 options drafted." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 1000,
+    "user_summary_md": "## Your Situation\n\nYou are 24 years old, just starting your career in the US, with **$300/month** to invest toward long-term wealth building. You have no existing investments — which is actually a great position to be in.\n\nCurrent macro: CPI at 3.2%, Fed funds rate at 5.25%, S&P 500 returned +24% YTD at a P/E of 28 (1.3σ above 10-year average of 21). Macro environment is moderately favourable for equity index investing.",
+    "portfolio_diagnosis_md": "You currently hold no investments. Cash savings are safe short-term, but inflation (currently 3.2%) erodes purchasing power over long horizons. Financial readiness: solid — you have monthly surplus and a clear goal. Starting now with $300/month compounds significantly over 10+ years via dollar-cost averaging.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Conservative Beginner Plan",
+        "risk_level": "Low",
+        "best_for": "Users nervous about early market losses",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Emergency fund (HYSA) | 40% | $120 |\n| Broad index fund (VOO, 0.03% expense ratio) | 40% | $120 |\n| Short-term bond fund | 20% | $60 |\n\n### Why this works\nDollar-cost averaging into a diversified equity index. Emergency buffer first.\n\n### Pros\n- Low emotional stress\n- Builds emergency buffer first\n- Ultra-low cost (0.03%/yr)\n\n### Cons\n- Slower wealth creation vs. full equity\n\n### Agent guidance\nChoose this if your biggest fear is losing money in the first 6–12 months."
+      },
+      {
+        "id": "opt-2",
+        "title": "Balanced Wealth Builder",
+        "risk_level": "Moderate",
+        "best_for": "Stable income earners with 10+ year horizon",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Equity index (FXAIX, 0.015% ER) | 70% | $210 |\n| Bond ETF (BND, 0.03% ER) | 20% | $60 |\n| Cash | 10% | $30 |\n\n### Why this works\nClassic 70/30 split. Historically ~7% real CAGR over 10+ years.\n\n### Pros\n- Proven long-term strategy\n- Very low cost\n- Diversified\n\n### Cons\n- 20-30% drawdowns possible in bad years\n\n### Agent guidance\nTextbook first-investor strategy. Start here unless you have specific constraints."
+      },
+      {
+        "id": "opt-3",
+        "title": "Growth-Focused Plan",
+        "risk_level": "Medium-High",
+        "best_for": "Investors who can tolerate 15–25% drawdowns without panic-selling",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Total market index (VTI, 0.03% ER) | 90% | $270 |\n| Cash reserve | 10% | $30 |\n\n### Why this works\nFull equity exposure maximises long-term compound returns. VTI 10y CAGR: ~12%.\n\n### Pros\n- Highest long-term expected return\n- Extremely low cost\n\n### Cons\n- High volatility; 2008 drawdown: -52%\n\n### Agent guidance\nOnly if a 30% paper loss won't cause you to sell."
+      }
+    ],
+    "hidden_disclosures": [
+      "VOO expense ratio: 0.03%/yr (~$0.90/yr per $3,000 invested) — extremely low.",
+      "FXAIX expense ratio: 0.015%/yr — Fidelity's zero-minimum fund, lowest in class.",
+      "BND expense ratio: 0.03%/yr.",
+      "Short-term capital gains tax applies if any position sold within 12 months (up to 37% in US).",
+      "Past performance does not guarantee future returns."
+    ]
+  }
+]

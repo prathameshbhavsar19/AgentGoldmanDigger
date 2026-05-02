@@ -1,20 +1,48 @@
 [
-  { "event_type": "analysis_started", "delay_ms": 100 },
-  { "event_type": "activity_step_started", "delay_ms": 150, "stepId": "s1", "label": "Reading your financial profile", "phase": "profile" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s1", "delta": "You are a first-time investor with $300/month capacity and a strong time horizon." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s1", "summary": "Profile understood. First-time investor with strong time horizon." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s2", "label": "Checking your emergency savings buffer", "phase": "safety" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s2", "delta": "Emergency savings appear limited. Safety-first approach recommended." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s2", "summary": "Safety buffer noted. Will factor into strategy options." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s3", "label": "Evaluating risk comfort", "phase": "risk" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s3", "delta": "Risk reaction suggests moderate comfort with short-term fluctuations." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s3", "summary": "Balanced risk profile confirmed." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s4", "label": "Building starter strategy options", "phase": "strategy" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s4", "delta": "Preparing 3 options: safety-first, balanced start, and long-term growth." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s4", "summary": "3 strategy paths prepared." },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "goal_summary", "priority": 1, "props": { "goal": "Wealth creation", "time_horizon": "5-10 years", "risk_tone": "Balanced" } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "financial_readiness", "priority": 2, "props": { "emergency_savings": "limited", "investment_capacity": "$300/month", "readiness_level": "Ready for conservative start" } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 200, "module": { "type": "strategy_options", "priority": 3, "props": { "options": [ { "title": "Safety First Foundation", "risk": "Low", "summary": "Build emergency fund before investing.", "pros": ["Low stress", "Builds safety"], "tradeoffs": ["Slower wealth growth"], "best_for": "Users without strong emergency fund" }, { "title": "Balanced Beginner Start", "risk": "Moderate", "summary": "Simple diversified funds with monthly SIP.", "pros": ["Good growth potential", "Simple"], "tradeoffs": ["Some market fluctuation"], "best_for": "Stable income, 5+ year horizon" }, { "title": "Long-Term Growth Path", "risk": "Medium-High", "summary": "Higher equity exposure for compounding.", "pros": ["Strong long-term returns"], "tradeoffs": ["Larger temporary drawdowns"], "best_for": "10+ year horizon" } ] } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "next_steps", "priority": 5, "props": { "actions": ["Start with this strategy", "Adjust my assumptions", "Ask AI a follow-up question"] } } },
-  { "event_type": "analysis_completed", "delay_ms": 200, "jobId": "PLACEHOLDER" }
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "First-time investor with $300/month and a strong long-term horizon." },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Profile: first-time investor." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-3", "label": "Scanning current macro landscape…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 300, "stepId": "step-3", "delta": "Checking CPI, policy rate, index snapshot…" },
+  { "event_type": "activity_step_started", "delay_ms": 400, "stepId": "step-7", "label": "Reading fund factsheets for hidden charges…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 500, "stepId": "step-7", "delta": "Reviewing expense ratios and disclosures for proposed funds…" },
+  { "event_type": "activity_step_started", "delay_ms": 600, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 700, "stepId": "step-9", "delta": "Synthesising 3 options for a first-time investor…" },
+  { "event_type": "activity_step_completed", "delay_ms": 800, "stepId": "step-9", "summary": "3 options drafted." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 900,
+    "user_summary_md": "## Your Situation\n\nYou are a first-time investor with **$300/month** to invest. You have no existing portfolio — which is a strong starting position. The key is to build habits and stay invested.\n\nMacro context: CPI at 3.2%, index markets moderately valued. Good time to start a regular investment programme.",
+    "portfolio_diagnosis_md": "No existing portfolio. Financial readiness: good — you have monthly investable capacity and a clear goal. Starting now with dollar-cost averaging into low-cost index funds is the textbook approach.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Safety First Foundation",
+        "risk_level": "Low",
+        "best_for": "Users who want to build an emergency buffer before market exposure",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Emergency fund (HYSA) | 50% | $150 |\n| Broad index fund (VOO) | 40% | $120 |\n| Cash | 10% | $30 |\n\n### Why this works\nBuilds a safety net first. Emergency fund is 3 months of expenses.\n\n### Pros\n- Low stress, builds safety\n- Slow and steady\n\n### Cons\n- Slower wealth growth\n\n### Agent guidance\nChoose this if you don't yet have 3 months of expenses saved."
+      },
+      {
+        "id": "opt-2",
+        "title": "Balanced Beginner Start",
+        "risk_level": "Moderate",
+        "best_for": "Stable income earners with 5+ year horizon",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Equity index (FXAIX, 0.015% ER) | 70% | $210 |\n| Bond ETF (BND) | 20% | $60 |\n| Cash | 10% | $30 |\n\n### Why this works\n70/30 classic split. Good growth with bond cushion.\n\n### Pros\n- Simple, diversified\n- Low cost\n\n### Cons\n- Some market fluctuation expected\n\n### Agent guidance\nTextbook first-investor strategy."
+      },
+      {
+        "id": "opt-3",
+        "title": "Long-Term Growth Path",
+        "risk_level": "Medium-High",
+        "best_for": "10+ year horizon, can accept short-term volatility",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Total market index (VTI, 0.03% ER) | 90% | $270 |\n| Cash | 10% | $30 |\n\n### Why this works\nFull equity for maximum long-term compounding.\n\n### Pros\n- Highest expected long-term return\n- Extremely low cost\n\n### Cons\n- High short-term volatility\n\n### Agent guidance\nOnly if you won't panic-sell on a 30% drop."
+      }
+    ],
+    "hidden_disclosures": [
+      "VOO expense ratio: 0.03%/yr — extremely low.",
+      "FXAIX expense ratio: 0.015%/yr.",
+      "BND expense ratio: 0.03%/yr.",
+      "STCG tax applies if any equity sold within 12 months."
+    ]
+  }
 ]

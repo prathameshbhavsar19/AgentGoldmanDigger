@@ -34,23 +34,27 @@ export function attachFrontendGateway(server: http.Server): void {
       }
     };
 
-    // Resume from lastEventId
+    // Resume from lastEventId — replay all events from lastEventId onward.
+    // When lastEventId = 0 (fresh connect), replays the full history so clients
+    // get a consistent view regardless of when they connect.
     const url = new URL(_req.url ?? "/", "http://localhost");
     const lastEventId = parseInt(url.searchParams.get("lastEventId") ?? "0", 10);
-    if (lastEventId > 0) {
-      const missed = getEventsAfter(jobId, lastEventId);
-      missed.forEach((e) => {
-        try {
-          send(JSON.parse(e.raw_event_json ?? "{}"));
-        } catch {
-          send({ event_type: e.event_type, job_id: e.job_id });
-        }
-      });
-    }
+    const missed = getEventsAfter(jobId, lastEventId);
+    missed.forEach((e) => {
+      try {
+        const payload = JSON.parse(e.raw_event_json ?? "{}") as Record<string, unknown>;
+        // Always include event_type from DB row — raw_event_json may use "type"
+        // instead of "event_type", which the frontend canvasStore switch ignores.
+        send({ ...payload, event_type: e.event_type, job_id: e.job_id, event_id: e.seq });
+      } catch {
+        send({ event_type: e.event_type, job_id: e.job_id, event_id: e.seq });
+      }
+    });
 
-    // Verify job exists
+    // Verify job exists — if already completed and no events were replayed,
+    // synthesise a terminal event so the client can close gracefully.
     const job = getJobById(jobId);
-    if (job?.status === "completed") {
+    if (job?.status === "completed" && missed.length === 0) {
       send({ event_type: "analysis_completed", job_id: jobId });
     }
 

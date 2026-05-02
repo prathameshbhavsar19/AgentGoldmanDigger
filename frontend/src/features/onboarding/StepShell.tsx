@@ -11,9 +11,10 @@ interface StepShellProps {
   submitting?: boolean
   ctaLabel?: string
   hideback?: boolean
+  hideSubmit?: boolean
 }
 
-export function StepShell({ title, subtitle, children, onSubmit, submitting, ctaLabel = 'Continue', hideback }: StepShellProps) {
+export function StepShell({ title, subtitle, children, onSubmit, submitting, ctaLabel = 'Continue', hideback, hideSubmit }: StepShellProps) {
   const { prevStep, currentStep } = useOnboardingStore()
   return (
     <form
@@ -26,16 +27,18 @@ export function StepShell({ title, subtitle, children, onSubmit, submitting, cta
         {subtitle && <p className="text-ink-muted">{subtitle}</p>}
       </div>
       {children}
-      <div className="flex items-center gap-3 pt-2">
-        {!hideback && currentStep !== 'details' && (
-          <Button type="button" variant="ghost" size="md" onClick={prevStep} className="gap-1.5">
-            <ArrowLeft className="h-4 w-4" /> Back
+      {!hideSubmit && (
+        <div className="flex items-center gap-3 pt-2">
+          {!hideback && currentStep !== 'details' && (
+            <Button type="button" variant="ghost" size="md" onClick={prevStep} className="gap-1.5">
+              <ArrowLeft className="h-4 w-4" /> Back
+            </Button>
+          )}
+          <Button type="submit" size="lg" fullWidth loading={submitting} className="flex-1">
+            {ctaLabel}
           </Button>
-        )}
-        <Button type="submit" size="lg" fullWidth loading={submitting} className="flex-1">
-          {ctaLabel}
-        </Button>
-      </div>
+        </div>
+      )}
     </form>
   )
 }

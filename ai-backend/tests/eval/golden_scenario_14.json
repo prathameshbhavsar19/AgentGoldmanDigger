@@ -1,0 +1,56 @@
+{
+  "_meta": {
+    "scenario": 14,
+    "description": "Geopolitical shock — Strait of Hormuz, airlines + tech + intl funds",
+    "created": "2026-05-02",
+    "prompt_version": "v1"
+  },
+  "tolerance_checks": {
+    "min_options": 3,
+    "required_risk_levels": ["Low", "Moderate"],
+    "hidden_disclosures_non_empty": true,
+    "causal_chain_regex": "(oil|airline|fuel|geopolit|Hormuz|energy|supply)",
+    "required_tool_buckets": ["market_data", "news", "portfolio_analytics", "macro"],
+    "required_specific_tools": [
+      "commodity_price",
+      "currency_rate",
+      "historical_stress_test",
+      "portfolio_concentration_analyzer",
+      "market_news_search"
+    ],
+    "second_order_reasoning_regex": "(airline|fuel|margin|pass.through|inflation)"
+  },
+  "sample_output": {
+    "user_summary_md": "## Your Situation\n\nWith the Strait of Hormuz blockage causing oil to spike, your portfolio has significant exposure through airline stocks and international funds. Let me trace the causal chain: oil up → airline jet-fuel costs rise ~25% of opex → airline margins compress → your airline holdings are directly in the blast radius...",
+    "portfolio_diagnosis_md": "Your portfolio has 35% in airlines (DAL, UAL) and 25% in tech-heavy international funds. Oil shock analysis: a sustained $20/barrel rise increases DAL's annual fuel costs by ~$2.1B, directly compressing earnings...",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Trim Airlines, Hedge with Energy",
+        "risk_level": "Moderate",
+        "best_for": "Investors willing to rebalance to manage near-term earnings risk",
+        "content_md": "### Asset Allocation\nReduce airline weight to <5%, add energy ETF as natural hedge..."
+      },
+      {
+        "id": "opt-2",
+        "title": "Defensive Rotation to Domestic Staples",
+        "risk_level": "Low",
+        "best_for": "Risk-averse investors wanting to weather the geopolitical storm",
+        "content_md": "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Consumer Staples ETF | 30% |\n| Domestic Bonds | 20% |\n| Cash | 20% |\n| Equity Index | 30% |..."
+      },
+      {
+        "id": "opt-3",
+        "title": "Hold and Monitor — Geopolitical Risk Is Transient",
+        "risk_level": "Medium-High",
+        "best_for": "Long-term investors who believe supply disruptions resolve within 3-6 months",
+        "content_md": "Historical precedent: 2018 oil shock resolved in 8 weeks. Airlines recovered within 6 months..."
+      }
+    ],
+    "hidden_disclosures": [
+      "DAL (Delta Air Lines) fuel hedging covers ~50% of near-term exposure — check quarterly filings.",
+      "International funds carry FX conversion fees of 0.5-1.5% on each purchase/redemption.",
+      "Energy ETF (XLE) expense ratio 0.10% — low cost but concentrated in oil majors.",
+      "Short-term capital gains tax if airline positions are sold within 12 months of purchase."
+    ]
+  }
+}

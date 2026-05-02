@@ -9,9 +9,11 @@ const KNOWN_MODULE_TYPES = new Set([
   "financial_readiness",
   "portfolio_snapshot",
   "risk_assessment",
+  "risk_diagnosis",       // emitted by canvas LLM demystifier
   "strategy_options",
   "strategy_cards",
   "comparison_table",
+  "glossary",             // emitted by canvas LLM demystifier
   "important_considerations",
   "next_steps",
 ]);

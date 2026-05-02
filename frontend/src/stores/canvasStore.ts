@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { WsEvent } from '../lib/ws'
 
 export type StepStatus = 'pending' | 'active' | 'completed' | 'error' | 'input-needed'
-export type CanvasStatus = 'idle' | 'streaming' | 'ready' | 'failed'
+export type CanvasStatus = 'idle' | 'streaming' | 'building' | 'ready' | 'failed'
 
 export interface ActivityStep {
   stepId: string
@@ -106,6 +106,10 @@ export const useCanvasStore = create<CanvasStore>()((set, get) => ({
         })
         break
       }
+
+      case 'canvas_generation_started':
+        set({ status: 'building' })
+        break
 
       case 'canvas_module_ready': {
         const mod = (event as { module: { type: string; priority: number; props: Record<string, unknown>; moduleId?: string }; event_type: string }).module

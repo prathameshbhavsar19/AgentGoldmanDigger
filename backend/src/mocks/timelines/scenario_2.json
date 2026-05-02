@@ -1,0 +1,54 @@
+[
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "Classifying persona: existing portfolio, panic mode…" },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Persona: has-portfolio-emotional." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-2", "label": "Diagnosing your current portfolio…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 300, "stepId": "step-2", "delta": "Running portfolio_concentration_analyzer on holdings…" },
+  { "event_type": "activity_thought_delta", "delay_ms": 400, "stepId": "step-2", "delta": "Checking cost drag: VTI 0.03%, BND 0.03% — very low…" },
+  { "event_type": "activity_step_completed", "delay_ms": 450, "stepId": "step-2", "summary": "Portfolio: well-diversified, low cost, -12% drawdown within normal range." },
+  { "event_type": "activity_step_started", "delay_ms": 500, "stepId": "step-3", "label": "Scanning current macro landscape…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 550, "stepId": "step-3", "delta": "CPI 3.2%, Fed rate 5.25%, market correction in context…" },
+  { "event_type": "activity_step_started", "delay_ms": 600, "stepId": "step-6", "label": "Stress-testing against historical scenarios…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 700, "stepId": "step-6", "delta": "Running historical_stress_test: 2008_GFC and 2020_COVID on your holdings…" },
+  { "event_type": "activity_thought_delta", "delay_ms": 800, "stepId": "step-6", "delta": "2020 COVID: portfolio would have drawn down ~28%; recovered by Aug 2020." },
+  { "event_type": "activity_step_completed", "delay_ms": 850, "stepId": "step-6", "summary": "Stress test complete. -12% is within normal correction territory." },
+  { "event_type": "activity_step_started", "delay_ms": 900, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 950, "stepId": "step-9", "delta": "Generating 3 options including 'do nothing' for full framing…" },
+  { "event_type": "activity_step_completed", "delay_ms": 1000, "stepId": "step-9", "summary": "3 options ready." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 1050,
+    "user_summary_md": "## Your Situation\n\nYour portfolio is down 12% and you are worried about further declines. This is stressful — and completely understandable. But before acting, let's look at what the data shows.\n\nStress test result: your portfolio (VTI 75%, BND 25%) would have drawn down ~28% in the 2020 COVID crash — and fully recovered within 5 months. Current -12% is a normal correction, not a crisis.",
+    "portfolio_diagnosis_md": "Your portfolio is broadly diversified with low costs (VTI 0.03%, BND 0.03%). Concentration risk: LOW. The -12% drawdown is within normal equity market correction territory. The real question is your time horizon: with 25 years to retirement, historically waiting has been the statistically superior choice.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Hold and Rebalance Calmly",
+        "risk_level": "Moderate",
+        "best_for": "Investors with 10+ year horizon who can accept further short-term volatility",
+        "content_md": "### Asset Allocation\nMaintain current 75/25 equity/bond split. Rebalance to target if equity drifts below 70%.\n\n### Why this works\nHistorical data: investors who held through 2008 (-52%), 2020 (-34%), and 2022 (-18%) recovered and reached new highs within 2-4 years.\n\n### Pros\n- No transaction costs\n- No tax realisation event\n- Historically optimal for 10+ year horizons\n\n### Cons\n- Portfolio may fall further before recovering\n\n### Agent guidance\nWith 25 years to retirement, holding is likely the right call. Worst-case 2008 GFC: -28% portfolio drawdown, recovered by 2012."
+      },
+      {
+        "id": "opt-2",
+        "title": "Defensive Shift — Reduce Equity Exposure",
+        "risk_level": "Low",
+        "best_for": "Investors who need to reduce anxiety and accept lower long-term returns",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Change |\n|---|---|---|\n| Equity (VTI) | 50% | -25% |\n| Short-term bonds (SHY) | 30% | +5% |\n| Cash / HYSA | 20% | +20% |\n\n### Why this works\nReduces equity beta by 33%. Limits further downside.\n\n### Pros\n- Lower anxiety, sleep at night\n- Limits further downside to ~7% if market falls another 20%\n\n### Cons\n- Selling into a decline crystallises losses\n- STCG tax if held <12 months\n- Historically underperforms buy-and-hold over 10+ years\n\n### Agent guidance\nConsider only if anxiety is significantly impairing your daily life, or if your actual horizon is shorter than stated."
+      },
+      {
+        "id": "opt-3",
+        "title": "Do Nothing — The Inertia Option",
+        "risk_level": "Medium-High",
+        "best_for": "Believers in long-term mean reversion who can stomach volatility",
+        "content_md": "### Asset Allocation\nNo change. Continue DCA contributions every month.\n\n### Why this works\n$10,000 invested in S&P 500 in January 2008 was worth $45,000 by 2024 (+350%), despite living through -52%.\n\n### Pros\n- Zero transaction costs, zero tax events\n- DCA at lower prices buys more units per dollar\n\n### Cons\n- Could fall further\n\n### Agent guidance\nIf horizon is 15+ years and you won't panic-sell, this is the evidence-based rational choice."
+      }
+    ],
+    "hidden_disclosures": [
+      "Selling VTI positions held <12 months triggers short-term capital gains tax (up to 37% in US).",
+      "VTI has no exit load, but your broker may charge a transaction fee (verify).",
+      "Moving to cash (HYSA): inflation at 3.2% erodes $3,200/yr per $100,000 in real terms.",
+      "SHY (iShares 1-3yr Treasury ETF) expense ratio: 0.15%/yr."
+    ]
+  }
+]

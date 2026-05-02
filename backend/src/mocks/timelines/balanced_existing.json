@@ -1,19 +1,51 @@
 [
-  { "event_type": "analysis_started", "delay_ms": 100 },
-  { "event_type": "activity_step_started", "delay_ms": 150, "stepId": "s1", "label": "Reading your financial profile", "phase": "profile" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s1", "delta": "You are 38 with a mixed mutual funds and stocks portfolio." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s1", "summary": "Existing investor with balanced portfolio." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s2", "label": "Parsing your portfolio", "phase": "portfolio" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s2", "delta": "Identifying stocks, mutual funds, and asset allocation." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s2", "summary": "Portfolio structure identified." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s3", "label": "Checking concentration risk", "phase": "risk" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s3", "delta": "Moderate concentration risk detected. Diversification could improve risk-adjusted returns." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s3", "summary": "Concentration risk: moderate." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s4", "label": "Comparing strategy paths", "phase": "strategy" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s4", "delta": "Comparing risk reduction, gradual rebalance, and growth tilt options." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s4", "summary": "4 options ready." },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "goal_summary", "priority": 1, "props": { "goal": "Portfolio improvement", "time_horizon": "5-10 years", "risk_tone": "Balanced" } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "portfolio_snapshot", "priority": 2, "props": { "allocation": "60% equity, 30% debt, 10% cash", "risk_level": "Moderate", "concentration": "Medium" } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 200, "module": { "type": "strategy_options", "priority": 3, "props": { "options": [ { "title": "Risk Reduction", "risk": "Lower", "summary": "Reduce concentration, add stabilizing assets." }, { "title": "Gradual Rebalance", "risk": "Moderate", "summary": "Adjust contributions, trim overexposed areas." }, { "title": "Goal-Aligned Growth", "risk": "Moderate-High", "summary": "Keep growth but improve diversification." } ] } } },
-  { "event_type": "analysis_completed", "delay_ms": 200, "jobId": "PLACEHOLDER" }
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "Existing investor, age 38, mixed portfolio." },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Persona: balanced existing investor." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-2", "label": "Diagnosing your current portfolio…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 350, "stepId": "step-2", "delta": "Concentration risk: moderate. Running portfolio_concentration_analyzer…" },
+  { "event_type": "activity_step_completed", "delay_ms": 450, "stepId": "step-2", "summary": "Portfolio structure: 60% equity, 30% bonds, 10% cash." },
+  { "event_type": "activity_step_started", "delay_ms": 500, "stepId": "step-3", "label": "Scanning current macro landscape…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 600, "stepId": "step-3", "delta": "Macro indicators and index snapshot checked…" },
+  { "event_type": "activity_step_started", "delay_ms": 650, "stepId": "step-7", "label": "Reading fund factsheets for hidden charges…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 750, "stepId": "step-7", "delta": "Checking expense ratios across existing holdings…" },
+  { "event_type": "activity_step_started", "delay_ms": 800, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 900, "stepId": "step-9", "delta": "Comparing risk reduction, gradual rebalance, and growth tilt…" },
+  { "event_type": "activity_step_completed", "delay_ms": 1000, "stepId": "step-9", "summary": "3 options ready." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 1050,
+    "user_summary_md": "## Your Situation\n\nYou are 38 with an existing balanced portfolio. Your goal is portfolio improvement with a 5-10 year horizon. Current allocation: 60% equity, 30% bonds, 10% cash — well-structured for your risk profile.",
+    "portfolio_diagnosis_md": "Portfolio is moderately diversified. Concentration risk is at moderate levels — some rebalancing may improve risk-adjusted returns. Cost drag is a consideration if you are holding high-expense-ratio active funds.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Risk Reduction — Shift Defensive",
+        "risk_level": "Low",
+        "best_for": "Investors wanting to reduce portfolio volatility",
+        "content_md": "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Equity | 45% |\n| Bonds | 40% |\n| Cash | 15% |\n\n### Why this works\nReduces equity beta while maintaining some growth.\n\n### Pros\n- Lower volatility\n- More stable returns\n\n### Cons\n- Lower long-term expected returns\n\n### Agent guidance\nConsider if approaching major liquidity event within 3-5 years."
+      },
+      {
+        "id": "opt-2",
+        "title": "Gradual Rebalance to Low-Cost Index",
+        "risk_level": "Moderate",
+        "best_for": "Investors with active funds who want to reduce costs without disrupting allocation",
+        "content_md": "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Low-cost index funds | 70% |\n| Bond ETFs | 20% |\n| Cash | 10% |\n\n### Why this works\nSwap active funds for index equivalents. Reduces expense drag significantly.\n\n### Pros\n- Reduces cost drag\n- Maintains diversification\n\n### Cons\n- May trigger tax events on switch\n\n### Agent guidance\nPrioritise switching highest-cost funds first."
+      },
+      {
+        "id": "opt-3",
+        "title": "Goal-Aligned Growth Tilt",
+        "risk_level": "Medium-High",
+        "best_for": "Investors with 10+ year horizon comfortable with higher equity",
+        "content_md": "### Asset Allocation\n| Asset | Allocation |\n|---|---|\n| Equity index | 80% |\n| Bonds | 15% |\n| Cash | 5% |\n\n### Why this works\nHigher equity weight maximises long-term returns for a 10yr+ horizon.\n\n### Pros\n- Higher expected return\n- Low cost if using index funds\n\n### Cons\n- Higher short-term volatility\n\n### Agent guidance\nSuitable only if you won't need the money for 10+ years."
+      }
+    ],
+    "hidden_disclosures": [
+      "Active mutual fund expense ratios typically 1-2%/yr — check your fund fact sheets.",
+      "Switching between funds may trigger capital gains tax events.",
+      "Bond funds may have minor exit loads on early redemption.",
+      "STCG applies if equity sold within 12 months of purchase."
+    ]
+  }
 ]

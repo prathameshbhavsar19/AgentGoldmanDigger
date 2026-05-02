@@ -10,7 +10,14 @@ const ALLOWED_TYPES = new Set([
   "analysis_completed",
   "analysis_failed",
   "needs_user_input",
+  // canvas_generation_started: emitted by Node after Phase A completes; forwarded to frontend
+  "canvas_generation_started",
+  // python_analysis_completed: terminal event from Python — consumed by Node only; NOT forwarded to frontend
+  "python_analysis_completed",
 ]);
+
+/** Event types that should never be forwarded to the browser — consumed by Node internally. */
+export const NODE_INTERNAL_TYPES = new Set(["python_analysis_completed"]);
 
 export interface NormalizedEvent {
   event_type: string;

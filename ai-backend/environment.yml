@@ -1,0 +1,50 @@
+# Conda environment for the Python / LangChain AI service.
+# Create:   conda env create -f environment.yml
+# Activate: conda activate goldman-digger-ai
+# Update:   conda env update -f environment.yml --prune
+
+name: goldman-digger-ai
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      # ── Core AI / orchestration ─────────────────────────────
+      - langchain>=0.3.0
+      - langchain-core>=0.3.0
+      - langchain-community>=0.3.0
+      - langchain-anthropic>=1.0.0
+      - langgraph>=1.0.0
+
+      # ── LLM provider ────────────────────────────────────────
+      - anthropic>=0.40.0
+
+      # ── Telemetry / observability ────────────────────────────
+      - langfuse>=2.7.0
+
+      # ── Web / news search ───────────────────────────────────
+      - tavily-python>=0.5.0
+
+      # ── Market data (real, no key) ──────────────────────────
+      - yfinance>=0.2.50
+      - pandas>=2.2.0
+
+      # ── Macro data ──────────────────────────────────────────
+      - fredapi>=0.5.2
+
+      # ── API layer ───────────────────────────────────────────
+      - fastapi>=0.115.0
+      - uvicorn[standard]>=0.32.0
+      - websockets>=13.0
+
+      # ── Data / config ───────────────────────────────────────
+      - pydantic>=2.0
+      - pydantic-settings>=2.0
+      - python-dotenv>=1.0
+      - httpx>=0.28.0
+
+      # ── Testing ─────────────────────────────────────────────
+      - pytest>=8.0
+      - pytest-asyncio>=0.23
+      - pytest-httpx>=0.30

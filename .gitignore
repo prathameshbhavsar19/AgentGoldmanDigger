@@ -164,4 +164,6 @@ nohup.out
 # Context docs (large PDFs / raw planning notes — not source code)
 context/
 
+# Local secrets (root .env with Langfuse keys, etc.)
+.env
 

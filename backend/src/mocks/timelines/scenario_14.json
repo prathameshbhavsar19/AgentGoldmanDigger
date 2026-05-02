@@ -1,0 +1,66 @@
+[
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "Classifying persona: macro-shock + concentration-risk…" },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Persona: macro-shock, airlines + tech." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-2", "label": "Diagnosing your current portfolio…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 300, "stepId": "step-2", "delta": "Running portfolio_concentration_analyzer: airlines 40%, tech 40%…" },
+  { "event_type": "activity_step_completed", "delay_ms": 400, "stepId": "step-2", "summary": "⚠️ Airlines = 40% portfolio — high concentration risk." },
+  { "event_type": "activity_step_started", "delay_ms": 450, "stepId": "step-3", "label": "Scanning macro landscape…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 500, "stepId": "step-3", "delta": "Checking commodity_price(OIL): +18% in 1 month. Brent crude spiking." },
+  { "event_type": "activity_thought_delta", "delay_ms": 600, "stepId": "step-3", "delta": "currency_rate(USD/INR): USD +2.1% vs INR — strengthening on safe-haven flow." },
+  { "event_type": "activity_step_started", "delay_ms": 650, "stepId": "step-4", "label": "Investigating the Hormuz geopolitical shock…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 700, "stepId": "step-4", "delta": "Searching market_news_search: 'Strait of Hormuz oil supply disruption'…" },
+  { "event_type": "activity_thought_delta", "delay_ms": 800, "stepId": "step-4", "delta": "Searching company_news(DAL): 'Delta Airlines fuel cost exposure'…" },
+  { "event_type": "activity_step_started", "delay_ms": 850, "stepId": "step-5", "label": "Mapping market shocks to your specific holdings…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 950, "stepId": "step-5", "delta": "Oil up → airline fuel costs +25% opex → DAL/UAL margins compressed → your 40% airline exposure directly hit." },
+  { "event_type": "activity_thought_delta", "delay_ms": 1050, "stepId": "step-5", "delta": "Second-order: USD strengthening → VWIGX international holdings lose FX value → check conversion fees." },
+  { "event_type": "activity_step_completed", "delay_ms": 1100, "stepId": "step-5", "summary": "Causal chain traced: Hormuz → oil → airlines → portfolio." },
+  { "event_type": "activity_step_started", "delay_ms": 1150, "stepId": "step-6", "label": "Stress-testing against 2018 oil shock…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 1250, "stepId": "step-6", "delta": "historical_stress_test(2018_oilshock): estimated portfolio drawdown -24% from current level." },
+  { "event_type": "activity_step_started", "delay_ms": 1300, "stepId": "step-7", "label": "Reading fund factsheets for hidden charges…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 1400, "stepId": "step-7", "delta": "QQQ: 0.20% ER (6.7x higher than VOO). VWIGX: 0.43% + FX conversion 0.5-1.5%…" },
+  { "event_type": "activity_thought_delta", "delay_ms": 1500, "stepId": "step-7", "delta": "hidden_charge_scanner(DAL): fuel hedging disclosure in 10-Q — ~50% near-term coverage." },
+  { "event_type": "activity_step_started", "delay_ms": 1550, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 1650, "stepId": "step-9", "delta": "3 options: Trim + Hedge, Defensive Rotation, Hold and Monitor…" },
+  { "event_type": "activity_step_completed", "delay_ms": 1700, "stepId": "step-9", "summary": "3 options drafted." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 1750,
+    "user_summary_md": "## Your Situation\n\nThe Strait of Hormuz blockage has caused oil futures to spike 18%. Let me trace the causal chain for your specific portfolio: **oil up → airline jet-fuel costs rise ~25% of opex → DAL/UAL margins compress → your airline holdings (40% of portfolio) are directly in the blast radius.**\n\nSecond-order effect: USD is strengthening +2.1% vs INR as safe-haven flow kicks in — your VWIGX international fund loses FX value on redemption. Third-order: if oil sustains above $100/bbl, CPI may bump further, delaying Fed cuts, which would pressure QQQ tech valuations.\n\nStress test (2018_oilshock): your portfolio would draw down approximately -24% from current levels if the scenario repeats.",
+    "portfolio_diagnosis_md": "Holdings: DAL ($5,000 — 25%), UAL ($3,000 — 15%), QQQ ($8,000 — 40%), VWIGX ($4,000 — 20%). Concentration risk: HIGH — airlines 40%, tech 40%. This is a heavily concentrated portfolio in two sectors that are both negatively exposed to oil spikes. Fund factsheet check: QQQ expense ratio is 0.20% (6.7x higher than VOO for similar exposure). VWIGX: 0.43% + FX conversion fees on every purchase/redemption.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Trim Airlines, Add Energy as Natural Hedge",
+        "risk_level": "Moderate",
+        "best_for": "Investors wanting active risk management without full defensive rotation",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Change |\n|---|---|---|\n| DAL | 10% | -15% (trim) |\n| UAL | 5% | -10% (trim) |\n| Energy ETF (XLE, 0.10% ER) | 15% | new |\n| QQQ | 40% | unchanged |\n| VWIGX | 20% | unchanged |\n| Cash | 10% | +10% |\n\n### Why this works\nEnergy stocks (XLE) have inverse correlation to airlines in oil shocks — your losses on DAL/UAL are partially offset by XLE gains.\n\n### Pros\n- Natural hedge reduces net exposure to oil\n- Cuts airline concentration from 40% to 15%\n\n### Cons\n- Transaction costs + STCG tax on DAL/UAL sale\n- Oil shock may be transient — potential buy-high timing risk\n\n### Agent guidance\nConsider this if the Hormuz situation looks like it will persist 3+ months. Note: DAL's 10-Q discloses ~50% near-term fuel hedging, so their actual earnings impact is roughly half of the headline number."
+      },
+      {
+        "id": "opt-2",
+        "title": "Defensive Rotation — Domestic Staples and Gold",
+        "risk_level": "Low",
+        "best_for": "Risk-averse investors wanting to minimise further drawdown",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Change |\n|---|---|---|\n| Consumer Staples ETF (XLP, 0.10% ER) | 25% | new |\n| Short-term US Bonds (SHY, 0.15% ER) | 20% | new |\n| Gold ETF (GLD, 0.40% ER) | 15% | new |\n| Cash | 15% | new |\n| QQQ | 25% | -15% |\n| Airlines | 0% | exit all |\n\n### Why this works\nGeopolitical oil shocks historically benefit gold (+5-12%) and favour domestic consumer staples. Exiting airlines removes the direct oil-cost risk.\n\n### Pros\n- Significantly reduces drawdown risk\n- Gold historically outperforms in oil-spike scenarios\n\n### Cons\n- Full airline exit triggers significant STCG tax\n- VWIGX exit incurs FX conversion fee 0.5-1.5%\n\n### Agent guidance\nOnly choose this if you have a specific near-term cash need or very low tolerance for further volatility."
+      },
+      {
+        "id": "opt-3",
+        "title": "Hold and Monitor — Geopolitical Risk Is Historically Transient",
+        "risk_level": "Medium-High",
+        "best_for": "Long-term investors who believe supply disruptions resolve within 3-6 months",
+        "content_md": "### Asset Allocation\nNo changes. Set monitoring thresholds.\n\n### Why this works\nHistorical precedent: 2018 oil shock (similar cause) resolved in 8 weeks. DAL recovered within 6 months. If you sell at the bottom, you risk missing the entire recovery.\n\n### Pros\n- No transaction costs\n- No tax crystallisation\n- Avoids buy-high-sell-low trap\n\n### Cons\n- Portfolio could fall further if situation escalates\n- 2022 sustained inflation: QQQ -40%, airlines -38%\n\n### Agent guidance\nSet a mental stop-loss (e.g., -35% from today) and only act if breached. Avoid permanent decisions based on temporary headlines."
+      }
+    ],
+    "hidden_disclosures": [
+      "DAL (Delta Air Lines): fuel hedging covers ~50% of near-term fuel cost exposure per last 10-Q filing.",
+      "UAL (United Airlines): minimal fuel hedging per last filing — near-full oil price exposure.",
+      "QQQ expense ratio: 0.20%/yr — 6.7x higher than VOO for comparable large-cap US exposure.",
+      "VWIGX (Vanguard International Growth Fund): 0.43% expense ratio + 0.5-1.5% FX conversion fee on each purchase and redemption.",
+      "XLE (Energy Select Sector SPDR ETF): 0.10% expense ratio.",
+      "GLD (SPDR Gold Shares): 0.40% expense ratio — annual gold storage cost embedded in NAV.",
+      "Short-term capital gains tax applies if airline positions sold within 12 months (up to 37% in US).",
+      "Currency risk on VWIGX: USD/INR has moved +2.1% in 1 month — further USD strengthening reduces redemption value for INR-based investors."
+    ]
+  }
+]

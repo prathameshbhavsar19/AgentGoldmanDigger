@@ -38,7 +38,7 @@ export const strategyOrchestrator = {
       });
 
       updateJob(job.id, { status: "running" });
-      pythonClient.subscribeToEvents(job.id);
+      pythonClient.subscribeToEvents(job.id, userJson);
     } catch (e) {
       logger.error({ jobId: job.id, err: e }, "Failed to start Python job");
       updateJob(job.id, { status: "failed", error_message: String(e) });

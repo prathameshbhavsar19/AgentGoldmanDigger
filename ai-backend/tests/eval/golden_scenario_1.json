@@ -1,0 +1,47 @@
+{
+  "_meta": {
+    "scenario": 1,
+    "description": "First-time investor, 24yo, $300/month, no portfolio",
+    "created": "2026-05-02",
+    "prompt_version": "v1"
+  },
+  "tolerance_checks": {
+    "min_options": 3,
+    "required_risk_levels": ["Low", "Moderate"],
+    "hidden_disclosures_non_empty": true,
+    "causal_chain_regex": "(macro|inflation|rate|index|market)",
+    "required_tool_buckets": ["macro", "news", "fees"]
+  },
+  "sample_output": {
+    "user_summary_md": "## Your Situation\n\nYou are 24 years old, just starting your career, with $300/month to invest toward long-term wealth building. You have no existing investments...",
+    "portfolio_diagnosis_md": "You currently hold no investments. Cash is safe short-term but loses purchasing power over 10+ years due to inflation...",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Conservative Beginner Plan",
+        "risk_level": "Low",
+        "best_for": "Users nervous about early market losses",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Emergency fund | 40% | $120 |\n| Broad index fund | 40% | $120 |\n| Short-term bond fund | 20% | $60 |\n\n### Why this works\nBuilds safety net first..."
+      },
+      {
+        "id": "opt-2",
+        "title": "Balanced Wealth Builder",
+        "risk_level": "Moderate",
+        "best_for": "Stable income earners with a 10+ year horizon",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Equity index fund | 70% | $210 |\n| Bond fund | 20% | $60 |\n| Cash | 10% | $30 |..."
+      },
+      {
+        "id": "opt-3",
+        "title": "Growth-Focused Plan",
+        "risk_level": "Medium-High",
+        "best_for": "Can tolerate 15-25% drawdowns without panic-selling",
+        "content_md": "### Asset Allocation\n| Asset | Allocation | Monthly |\n|---|---|---|\n| Equity index fund | 90% | $270 |\n| Cash reserve | 10% | $30 |..."
+      }
+    ],
+    "hidden_disclosures": [
+      "Expense ratio ~0.03%/yr on VOO; ~$0.09/yr per $300 invested — extremely low.",
+      "Capital gains tax applies on equity sold within 12 months (short-term rate in US).",
+      "Bond fund may carry minor exit loads — verify before redemption."
+    ]
+  }
+}

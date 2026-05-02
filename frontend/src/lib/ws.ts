@@ -6,6 +6,7 @@ export type WsEventType =
   | 'activity_step_completed'
   | 'canvas_module_ready'
   | 'canvas_module_updating'
+  | 'canvas_generation_started'
   | 'analysis_completed'
   | 'analysis_failed'
   | 'needs_user_input'

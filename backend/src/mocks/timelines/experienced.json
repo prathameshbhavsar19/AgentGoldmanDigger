@@ -1,20 +1,53 @@
 [
-  { "event_type": "analysis_started", "delay_ms": 100 },
-  { "event_type": "activity_step_started", "delay_ms": 150, "stepId": "s1", "label": "Parsing uploaded portfolio", "phase": "portfolio" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s1", "delta": "Multi-asset portfolio detected: equities, bonds, ETFs, and alternative assets." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s1", "summary": "Portfolio fully parsed." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s2", "label": "Reviewing fund and stock overlap", "phase": "overlap" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s2", "delta": "Some overlap between large-cap ETF and individual stock positions." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s2", "summary": "Moderate overlap identified." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s3", "label": "Stress-testing against market uncertainty", "phase": "stress" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s3", "delta": "Simulating 20% drawdown scenario. Portfolio shows resilience with current allocation." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s3", "summary": "Portfolio shows moderate drawdown resilience." },
-  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s4", "label": "Building tactical rebalancing options", "phase": "strategy" },
-  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s4", "delta": "Preparing advanced options including tactical tilt and stress-test-based rebalancing." },
-  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s4", "summary": "4 strategic options ready." },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "goal_summary", "priority": 1, "props": { "goal": "Stress test and rebalancing", "time_horizon": "10+ years", "risk_tone": "Analytical" } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "portfolio_snapshot", "priority": 2, "props": { "allocation": "70% equity, 20% bonds, 10% alternatives", "overlap_detected": true } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "risk_assessment", "priority": 3, "props": { "risk_level": "Moderate-High", "drawdown_estimate": "-18% in stress scenario", "mismatch": false } } },
-  { "event_type": "canvas_module_ready", "delay_ms": 200, "module": { "type": "strategy_options", "priority": 4, "props": { "options": [ { "title": "Reduce Overlap", "risk": "Lower", "summary": "Consolidate overlapping positions." }, { "title": "Tactical Tilt", "risk": "High", "summary": "Adjust exposure based on macro context." }, { "title": "Stress-Based Rebalance", "risk": "Moderate", "summary": "Rebalance based on stress test results." } ] } } },
-  { "event_type": "analysis_completed", "delay_ms": 200, "jobId": "PLACEHOLDER" }
+  { "event_type": "analysis_started", "delay_ms": 50 },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "step-1", "label": "Reading your financial profile…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 150, "stepId": "step-1", "delta": "Experienced investor, multi-asset portfolio detected." },
+  { "event_type": "activity_step_completed", "delay_ms": 200, "stepId": "step-1", "summary": "Profile: experienced investor." },
+  { "event_type": "activity_step_started", "delay_ms": 250, "stepId": "step-2", "label": "Diagnosing your current portfolio…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 300, "stepId": "step-2", "delta": "Checking fund overlap between large-cap ETF and individual stock positions…" },
+  { "event_type": "activity_thought_delta", "delay_ms": 400, "stepId": "step-2", "delta": "Moderate overlap identified. Cost drag analysis in progress…" },
+  { "event_type": "activity_step_completed", "delay_ms": 450, "stepId": "step-2", "summary": "Overlap: moderate. Cost drag: moderate." },
+  { "event_type": "activity_step_started", "delay_ms": 500, "stepId": "step-6", "label": "Stress-testing against historical scenarios…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 600, "stepId": "step-6", "delta": "Running historical_stress_test: 2022_inflation scenario on holdings…" },
+  { "event_type": "activity_step_completed", "delay_ms": 700, "stepId": "step-6", "summary": "Stress test: ~-18% estimated drawdown." },
+  { "event_type": "activity_step_started", "delay_ms": 750, "stepId": "step-7", "label": "Reading fund factsheets for hidden charges…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 850, "stepId": "step-7", "delta": "Checking expense ratios and hidden charges across all holdings…" },
+  { "event_type": "activity_step_started", "delay_ms": 900, "stepId": "step-9", "label": "Drafting your personalised strategy options…", "phase": "thinking" },
+  { "event_type": "activity_thought_delta", "delay_ms": 1000, "stepId": "step-9", "delta": "Preparing advanced options: reduce overlap, tactical tilt, stress-based rebalance…" },
+  { "event_type": "activity_step_completed", "delay_ms": 1050, "stepId": "step-9", "summary": "3 options ready." },
+  {
+    "event_type": "python_analysis_completed",
+    "delay_ms": 1100,
+    "user_summary_md": "## Your Situation\n\nYou are an experienced investor with a multi-asset portfolio (equities, bonds, ETFs, alternatives). You are looking for a stress test and tactical rebalancing review. Your 10+ year horizon gives you time to absorb short-term volatility.",
+    "portfolio_diagnosis_md": "Portfolio allocation: ~70% equity, 20% bonds, 10% alternatives. Overlap detected between large-cap ETF positions and individual stock names. Cost drag is moderate — some positions carry higher-than-necessary expense ratios. Stress test (2022 inflation scenario): estimated -18% drawdown from current levels.",
+    "options": [
+      {
+        "id": "opt-1",
+        "title": "Reduce Overlap and Consolidate",
+        "risk_level": "Moderate",
+        "best_for": "Investors who want a cleaner, lower-cost portfolio",
+        "content_md": "### Asset Allocation\nConsolidate overlapping large-cap positions into a single index fund.\n\n### Why this works\nReduces hidden duplication, lowers cost drag, simplifies rebalancing.\n\n### Pros\n- Lower cost\n- Cleaner portfolio\n\n### Cons\n- May trigger capital gains on switches\n\n### Agent guidance\nStart by identifying your highest-overlap fund pairs using fund_overlap_analyzer."
+      },
+      {
+        "id": "opt-2",
+        "title": "Tactical Macro Tilt",
+        "risk_level": "Medium-High",
+        "best_for": "Active investors comfortable with tactical position adjustments",
+        "content_md": "### Asset Allocation\nShift 10% from bonds to inflation-hedged assets (TIPS, commodities) given current macro.\n\n### Why this works\nIn a sticky-inflation environment, TIPS and commodities historically outperform nominal bonds.\n\n### Pros\n- Better inflation protection\n- Active risk management\n\n### Cons\n- Higher trading activity, more tax complexity\n\n### Agent guidance\nMonitor CPI trend monthly. Reverse tilt when inflation falls below 2.5%."
+      },
+      {
+        "id": "opt-3",
+        "title": "Stress-Based Rebalance",
+        "risk_level": "Moderate",
+        "best_for": "Investors who want to use the stress test results to drive allocation",
+        "content_md": "### Asset Allocation\nRebalance to reduce allocation to sectors with highest stress-test drawdown.\n\n### Why this works\nReduces worst-case drawdown by trimming over-exposed sectors revealed by the stress test.\n\n### Pros\n- Data-driven decision\n- Improves risk/return profile\n\n### Cons\n- Requires accepting some gains realisation\n\n### Agent guidance\nFocus on trimming sectors with >-40% stress drawdown first."
+      }
+    ],
+    "hidden_disclosures": [
+      "Large-cap ETF overlap with individual stocks means you effectively hold some names at 2x weight.",
+      "Active fund expense ratios in your portfolio: check each fund factsheet — averages are typically 0.5-1.5%/yr.",
+      "Tactical tilt transactions may trigger STCG if positions held <12 months.",
+      "Alternatives (if illiquid) may have redemption gates or lock-up periods — check offering documents."
+    ]
+  }
 ]
