@@ -1,0 +1,89 @@
+/* Portfolio GPS — Design Tokens
+   Goldman-Sachs-inspired institutional palette
+   Generated from design-system/portfolio-gps/MASTER.md + plan §3 tokens */
+
+:root {
+  /* Backgrounds */
+  --bg:         #F7F5EF;
+  --bg-elev:    #FFFFFF;
+  --bg-subtle:  #F0EDE4;
+
+  /* Ink */
+  --ink:        #0B1F3A;
+  --ink-muted:  #475569;
+  --ink-faint:  #94A3B8;
+
+  /* Accent — muted gold */
+  --accent:        #B89D5E;
+  --accent-strong: #8C7A45;
+  --accent-soft:   #F0E8D0;
+
+  /* Brand — GS-blue inspired primary */
+  --brand:      #1F3A8A;
+  --brand-light:#2D54C4;
+  --brand-dark: #152966;
+
+  /* Borders */
+  --border:        #E5E2D8;
+  --border-strong: #C8C4B8;
+
+  /* Semantic */
+  --success:      #1F6F4A;
+  --success-soft: #D4EDDF;
+  --warn:         #A66800;
+  --warn-soft:    #FEF3C7;
+  --danger:       #9B2C2C;
+  --danger-soft:  #FEE2E2;
+
+  /* Typography */
+  --font-sans: 'Goldman Sans', 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-card:    0 1px 3px 0 rgba(11,31,58,0.08), 0 1px 2px -1px rgba(11,31,58,0.04);
+  --shadow-panel:   0 4px 16px 0 rgba(11,31,58,0.08);
+  --shadow-floating:0 8px 32px 0 rgba(11,31,58,0.12);
+
+  /* Activity feed dot states */
+  --dot-pending:   #C8C4B8;
+  --dot-active:    #B89D5E;
+  --dot-complete:  #1F3A8A;
+  --dot-error:     #9B2C2C;
+}
+
+/* Shimmer utility for skeleton loaders */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-subtle) 25%,
+    var(--bg-elev)   50%,
+    var(--bg-subtle) 75%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes pulseGold {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer { animation: none; }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,90 @@
+/* All @import must come first */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Goldman Sans self-hosted (woff2 files go in public/fonts/) */
+@font-face {
+  font-family: 'Goldman Sans';
+  src: url('/fonts/GoldmanSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Goldman Sans';
+  src: url('/fonts/GoldmanSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Goldman Sans';
+  src: url('/fonts/GoldmanSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  /* Focus ring — token-driven */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-subtle); }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+}
+
+@layer components {
+  /* Skeleton base */
+  .skeleton {
+    @apply shimmer rounded bg-[var(--bg-subtle)];
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-[var(--border)];
+  }
+}
+
+@layer utilities {
+  .text-ink       { color: var(--ink); }
+  .text-ink-muted { color: var(--ink-muted); }
+  .text-ink-faint { color: var(--ink-faint); }
+  .text-accent    { color: var(--accent); }
+  .text-brand     { color: var(--brand); }
+
+  .bg-surface     { background-color: var(--bg); }
+  .bg-elev        { background-color: var(--bg-elev); }
+  .bg-subtle      { background-color: var(--bg-subtle); }
+
+  .border-token   { border-color: var(--border); }
+}
