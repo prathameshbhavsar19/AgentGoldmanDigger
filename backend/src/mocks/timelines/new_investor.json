@@ -1,0 +1,20 @@
+[
+  { "event_type": "analysis_started", "delay_ms": 100 },
+  { "event_type": "activity_step_started", "delay_ms": 150, "stepId": "s1", "label": "Reading your financial profile", "phase": "profile" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s1", "delta": "You are a first-time investor with $300/month capacity and a strong time horizon." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s1", "summary": "Profile understood. First-time investor with strong time horizon." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s2", "label": "Checking your emergency savings buffer", "phase": "safety" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s2", "delta": "Emergency savings appear limited. Safety-first approach recommended." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s2", "summary": "Safety buffer noted. Will factor into strategy options." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s3", "label": "Evaluating risk comfort", "phase": "risk" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s3", "delta": "Risk reaction suggests moderate comfort with short-term fluctuations." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s3", "summary": "Balanced risk profile confirmed." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s4", "label": "Building starter strategy options", "phase": "strategy" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s4", "delta": "Preparing 3 options: safety-first, balanced start, and long-term growth." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s4", "summary": "3 strategy paths prepared." },
+  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "goal_summary", "priority": 1, "props": { "goal": "Wealth creation", "time_horizon": "5-10 years", "risk_tone": "Balanced" } } },
+  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "financial_readiness", "priority": 2, "props": { "emergency_savings": "limited", "investment_capacity": "$300/month", "readiness_level": "Ready for conservative start" } } },
+  { "event_type": "canvas_module_ready", "delay_ms": 200, "module": { "type": "strategy_options", "priority": 3, "props": { "options": [ { "title": "Safety First Foundation", "risk": "Low", "summary": "Build emergency fund before investing.", "pros": ["Low stress", "Builds safety"], "tradeoffs": ["Slower wealth growth"], "best_for": "Users without strong emergency fund" }, { "title": "Balanced Beginner Start", "risk": "Moderate", "summary": "Simple diversified funds with monthly SIP.", "pros": ["Good growth potential", "Simple"], "tradeoffs": ["Some market fluctuation"], "best_for": "Stable income, 5+ year horizon" }, { "title": "Long-Term Growth Path", "risk": "Medium-High", "summary": "Higher equity exposure for compounding.", "pros": ["Strong long-term returns"], "tradeoffs": ["Larger temporary drawdowns"], "best_for": "10+ year horizon" } ] } } },
+  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "next_steps", "priority": 5, "props": { "actions": ["Start with this strategy", "Adjust my assumptions", "Ask AI a follow-up question"] } } },
+  { "event_type": "analysis_completed", "delay_ms": 200, "jobId": "PLACEHOLDER" }
+]

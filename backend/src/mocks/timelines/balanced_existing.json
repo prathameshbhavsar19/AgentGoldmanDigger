@@ -1,0 +1,19 @@
+[
+  { "event_type": "analysis_started", "delay_ms": 100 },
+  { "event_type": "activity_step_started", "delay_ms": 150, "stepId": "s1", "label": "Reading your financial profile", "phase": "profile" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s1", "delta": "You are 38 with a mixed mutual funds and stocks portfolio." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s1", "summary": "Existing investor with balanced portfolio." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s2", "label": "Parsing your portfolio", "phase": "portfolio" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s2", "delta": "Identifying stocks, mutual funds, and asset allocation." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s2", "summary": "Portfolio structure identified." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s3", "label": "Checking concentration risk", "phase": "risk" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s3", "delta": "Moderate concentration risk detected. Diversification could improve risk-adjusted returns." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s3", "summary": "Concentration risk: moderate." },
+  { "event_type": "activity_step_started", "delay_ms": 100, "stepId": "s4", "label": "Comparing strategy paths", "phase": "strategy" },
+  { "event_type": "activity_thought_delta", "delay_ms": 200, "stepId": "s4", "delta": "Comparing risk reduction, gradual rebalance, and growth tilt options." },
+  { "event_type": "activity_step_completed", "delay_ms": 150, "stepId": "s4", "summary": "4 options ready." },
+  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "goal_summary", "priority": 1, "props": { "goal": "Portfolio improvement", "time_horizon": "5-10 years", "risk_tone": "Balanced" } } },
+  { "event_type": "canvas_module_ready", "delay_ms": 150, "module": { "type": "portfolio_snapshot", "priority": 2, "props": { "allocation": "60% equity, 30% debt, 10% cash", "risk_level": "Moderate", "concentration": "Medium" } } },
+  { "event_type": "canvas_module_ready", "delay_ms": 200, "module": { "type": "strategy_options", "priority": 3, "props": { "options": [ { "title": "Risk Reduction", "risk": "Lower", "summary": "Reduce concentration, add stabilizing assets." }, { "title": "Gradual Rebalance", "risk": "Moderate", "summary": "Adjust contributions, trim overexposed areas." }, { "title": "Goal-Aligned Growth", "risk": "Moderate-High", "summary": "Keep growth but improve diversification." } ] } } },
+  { "event_type": "analysis_completed", "delay_ms": 200, "jobId": "PLACEHOLDER" }
+]
