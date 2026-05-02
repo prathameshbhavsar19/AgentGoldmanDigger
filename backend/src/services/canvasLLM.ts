@@ -1,7 +1,7 @@
 /**
  * Node.js canvas demystifier + builder LLM.
  *
- * Receives Python's structured FinalAnalysis JSON, calls claude-sonnet-4-6 to:
+ * Receives Python's structured FinalAnalysis JSON, calls the configured LLM (claude-haiku-4-5) to:
  *  1. Demystify financial jargon in each option (inline replacements + glossary extraction)
  *  2. Structure the result into frontend-renderable canvas modules
  *
@@ -196,7 +196,7 @@ export async function buildCanvasFromAnalysis(
     // requests with "Streaming is required for operations >10 min".
     // LangChain accumulates the stream and returns the full message.
     streaming: true,
-    maxTokens: 32000,
+    maxTokens: 8000,
     temperature: 0,
   });
 

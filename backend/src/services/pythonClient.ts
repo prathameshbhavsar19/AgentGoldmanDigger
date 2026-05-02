@@ -199,15 +199,30 @@ export const pythonClient = {
       if (terminated) return;
       const wsUrl = lastSeq > 0 ? `${url}?lastEventId=${lastSeq}` : url;
       const ws = new WebSocket(wsUrl);
+      let openedAt = 0;
 
       ws.on("open", () => {
         logger.info({ jobId }, "Connected to Python WS events");
-        attempt = 0;
+        openedAt = Date.now();
+        // Only reset retry counter if we had a stable previous connection (>5s)
+        // Never reset on a fresh open — prevents infinite tight-loop
       });
 
       ws.on("message", (data) => {
         try {
           const raw = JSON.parse(data.toString()) as Record<string, unknown>;
+
+          // Heartbeat — keep alive, no action needed
+          if ((raw as any).type === "heartbeat") return;
+
+          // Python reports job not found — treat as permanent failure
+          if ((raw as any).type === "error") {
+            logger.error({ jobId, msg: (raw as any).message }, "Python WS job error");
+            fail((raw as any).message as string ?? "Python job not found");
+            try { ws.close(); } catch { /* ignore */ }
+            return;
+          }
+
           const normalized = normalizeEvent(raw, jobId);
           if (!normalized) return;
 
@@ -223,6 +238,8 @@ export const pythonClient = {
             lastSeq = eventRow.seq;
             const enriched = { ...normalized, event_id: eventRow.seq };
             eventBus.publish(jobId, enriched);
+            // Got real data — this is a healthy connection, reset retry counter
+            attempt = 0;
           }
 
           // Terminal events from Python
@@ -252,17 +269,28 @@ export const pythonClient = {
         }
       });
 
-      ws.on("close", () => {
+      ws.on("close", (code) => {
         if (terminated) {
           logger.info({ jobId }, "Python WS closed (terminated)");
           return;
         }
+
+        // Code 4004 = Python says job not found (service restarted, job lost)
+        // Code 1000 = clean normal close — job is actually done
+        if (code === 4004 || code === 1000) {
+          logger.error({ jobId, code }, "Python WS closed with terminal code — failing job");
+          fail(`Python WS closed with code ${code} — job lost or completed without result`);
+          return;
+        }
+
         if (attempt >= MAX_ATTEMPTS) {
           logger.error({ jobId, attempt }, "Python WS exceeded max reconnects");
           fail("Python WS reconnect limit exceeded");
           return;
         }
-        logger.info({ jobId, attempt }, "Python WS closed, scheduling reconnect");
+
+        const connectedMs = openedAt > 0 ? Date.now() - openedAt : 0;
+        logger.info({ jobId, attempt, connectedMs }, "Python WS closed, scheduling reconnect");
         const delay = backoff(attempt++);
         sleep(delay).then(connect);
       });

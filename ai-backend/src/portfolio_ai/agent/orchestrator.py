@@ -129,7 +129,7 @@ async def run_agent_job(
     llm = ChatAnthropic(
         model=settings.ANTHROPIC_MODEL,
         api_key=settings.ANTHROPIC_API_KEY,
-        max_tokens=32000,
+        max_tokens=16000,
         temperature=0,
     )
 

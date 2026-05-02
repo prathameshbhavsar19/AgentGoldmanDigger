@@ -155,16 +155,25 @@ export default function AICanvasPage() {
             </AnimatePresence>
 
             {/* Summary banner once ready */}
-            {isReady && userName && (
+            {isReady && (
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-xl bg-brand text-white shadow-[0_4px_20px_rgba(0,0,0,0.12)]"
+                className="mb-6"
               >
-                <p className="font-semibold">{userName}, your portfolio strategy is ready.</p>
-                <p className="text-sm text-white/70 mt-0.5">
-                  Portfolio GPS prepared{optionCount > 0 ? ` ${optionCount}` : ''} strategy paths based on your profile.
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-ink-muted font-semibold mb-1">AI strategy canvas module</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-ink leading-tight">
+                      Recommended strategy options
+                    </h1>
+                    {optionCount > 0 && (
+                      <p className="text-sm text-ink-muted mt-1 max-w-lg">
+                        Portfolio GPS prepared {optionCount} clear paths based on your profile. Each explains the allocation, risk level, tradeoff, and when it suits you.
+                      </p>
+                    )}
+                  </div>
+                </div>
               </motion.div>
             )}
 
