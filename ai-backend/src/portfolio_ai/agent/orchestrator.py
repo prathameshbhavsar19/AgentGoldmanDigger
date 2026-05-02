@@ -144,8 +144,11 @@ async def run_agent_job(
         "\n\nPlease conduct your full research pipeline and produce the structured analysis."
     )
 
+    # parallel_tool_calls=True lets the model return multiple tool_use blocks
+    # in a single step; LangGraph executes them concurrently, cutting wall-clock
+    # time significantly when several independent lookups are needed.
     agent = create_react_agent(
-        llm.bind_tools(ALL_TOOLS),
+        llm.bind_tools(ALL_TOOLS, parallel_tool_calls=True),
         ALL_TOOLS,
         prompt=system_prompt,
     )

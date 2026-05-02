@@ -164,7 +164,7 @@ export default function AICanvasPage() {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div>
                     <p className="text-xs uppercase tracking-widest text-ink-muted font-semibold mb-1">AI strategy canvas module</p>
-                    <h1 className="text-2xl md:text-3xl font-bold text-ink leading-tight">
+                    <h1 className="text-2xl md:text-3xl font-bold text-brand leading-tight">
                       Recommended strategy options
                     </h1>
                     {optionCount > 0 && (

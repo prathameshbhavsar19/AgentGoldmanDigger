@@ -103,7 +103,7 @@ export function RiskDiagnosis(p: RiskDiagnosisProps) {
                 {p.score_label}
               </span>
             )}
-            <h3 className="text-base font-bold text-ink leading-snug">
+            <h3 className="text-base font-bold text-brand leading-snug">
               {p.headline ?? 'Your portfolio health check'}
             </h3>
             {p.intro && (

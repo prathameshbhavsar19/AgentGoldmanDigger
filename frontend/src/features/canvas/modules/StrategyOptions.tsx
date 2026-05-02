@@ -190,7 +190,7 @@ function StrategyCard({
 
       {/* Title + tagline */}
       <div>
-        <h4 className="font-bold text-ink text-base leading-tight mb-1">{opt.title}</h4>
+          <h4 className="font-bold text-brand text-base leading-tight mb-1">{opt.title}</h4>
         <p className="text-sm text-ink-muted leading-snug">
           {opt.tagline ?? opt.summary_plain ?? opt.summary ?? ''}
         </p>
@@ -236,7 +236,7 @@ function DetailPanel({ opt }: { opt: StrategyOption }) {
         <div className="p-5 space-y-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Why this option exists</p>
-            <h4 className="font-bold text-ink text-lg mb-2">{opt.title}</h4>
+            <h4 className="font-bold text-brand text-lg mb-2">{opt.title}</h4>
             <p className="text-sm text-ink-muted leading-relaxed">
               {opt.what_is_it ?? opt.details_md_plain ?? opt.summary_plain ?? ''}
             </p>
@@ -342,7 +342,7 @@ export function StrategyOptions({ options }: StrategyOptionsProps) {
       {/* Section header */}
       <div className="mb-5">
         <div className="flex items-baseline justify-between mb-1">
-          <h2 className="text-2xl font-bold text-ink">Recommended strategy options</h2>
+          <h2 className="text-2xl font-bold text-brand">Recommended strategy options</h2>
           <span className="text-xs text-ink-muted bg-[var(--bg-subtle)] px-2 py-1 rounded-full hidden sm:block">
             {options.length} paths
           </span>

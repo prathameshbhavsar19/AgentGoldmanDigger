@@ -45,7 +45,7 @@ export function NextStepActions({ headline, steps, actions, primary, secondary =
         transition={{ duration: 0.4, delay: 0.3 }}
         data-testid="next-steps-module"
       >
-        <h3 className="font-bold text-ink text-base mb-4">
+        <h3 className="font-bold text-brand text-base mb-4">
           🚀 {headline ?? 'Your action plan — start here'}
         </h3>
 
@@ -94,7 +94,7 @@ export function NextStepActions({ headline, steps, actions, primary, secondary =
         transition={{ duration: 0.4, delay: 0.3 }}
         data-testid="next-steps-module"
       >
-        <h3 className="font-bold text-ink text-base mb-4">🚀 Your action plan</h3>
+        <h3 className="font-bold text-brand text-base mb-4">🚀 Your action plan</h3>
         <div className="flex flex-col gap-3">
           {actions.map((action, i) => (
             <div key={i} className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] p-4">
