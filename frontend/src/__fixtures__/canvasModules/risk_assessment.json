@@ -1,0 +1,16 @@
+{
+  "type": "risk_assessment",
+  "priority": 4,
+  "moduleId": "risk_assessment-4",
+  "props": {
+    "portfolioRisk": "Moderate",
+    "behaviouralRisk": "Moderate",
+    "mismatch": false,
+    "mismatchNote": null,
+    "drawdownScenario": {
+      "label": "If markets drop 20%",
+      "impact": "~$300 temporary loss on a $1,500 portfolio",
+      "advice": "This is within the normal range for diversified equity funds."
+    }
+  }
+}

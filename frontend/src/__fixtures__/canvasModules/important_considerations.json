@@ -1,0 +1,13 @@
+{
+  "type": "important_considerations",
+  "priority": 7,
+  "moduleId": "important_considerations-7",
+  "props": {
+    "items": [
+      "Returns are not guaranteed. Past performance is not a reliable indicator of future results.",
+      "Expense ratios, taxes, lock-in periods, and exit loads may reduce net returns.",
+      "Market volatility may cause temporary decreases in portfolio value.",
+      "This analysis is for educational purposes only. Please consult a qualified financial adviser before making investment decisions."
+    ]
+  }
+}

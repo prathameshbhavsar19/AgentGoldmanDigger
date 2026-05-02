@@ -1,0 +1,55 @@
+{
+  "type": "strategy_options",
+  "priority": 5,
+  "moduleId": "strategy_options-5",
+  "props": {
+    "recommended": "option-b",
+    "options": [
+      {
+        "id": "option-a",
+        "title": "Safety First Foundation",
+        "summary": "Build emergency savings before taking major market risk.",
+        "riskLevel": "Low",
+        "goalFit": "Partial",
+        "allocation": [
+          { "label": "Emergency savings", "pct": 40, "color": "#64748B" },
+          { "label": "Broad index fund",  "pct": 40, "color": "#1F3A8A" },
+          { "label": "Short-term bonds",  "pct": 20, "color": "#B89D5E" }
+        ],
+        "pros": ["Low emotional stress", "Builds emergency fund", "Good for first 6–12 months"],
+        "tradeoffs": ["Slower wealth creation", "Less equity exposure early on"],
+        "nextAction": "Start a recurring deposit for your emergency fund first"
+      },
+      {
+        "id": "option-b",
+        "title": "Beginner Balanced Start",
+        "summary": "Simple diversified funds with consistent monthly investing.",
+        "riskLevel": "Moderate",
+        "goalFit": "Strong",
+        "allocation": [
+          { "label": "Broad equity fund",  "pct": 70, "color": "#1F3A8A" },
+          { "label": "Debt / bond fund",   "pct": 20, "color": "#B89D5E" },
+          { "label": "Emergency buffer",   "pct": 10, "color": "#64748B" }
+        ],
+        "pros": ["Better long-term growth", "Simple and diversified", "Works well with SIP"],
+        "tradeoffs": ["Portfolio may fall short-term", "Requires discipline during bad news"],
+        "nextAction": "Set up a monthly SIP in a broad index fund"
+      },
+      {
+        "id": "option-c",
+        "title": "Long-Term Growth Path",
+        "summary": "Higher equity exposure for long-term compounding.",
+        "riskLevel": "Medium-High",
+        "goalFit": "Good",
+        "allocation": [
+          { "label": "Equity funds",    "pct": 85, "color": "#1F3A8A" },
+          { "label": "Bond / debt",     "pct": 10, "color": "#B89D5E" },
+          { "label": "International",   "pct": 5,  "color": "#1F6F4A" }
+        ],
+        "pros": ["Maximum long-term growth", "Best for 10+ year horizons"],
+        "tradeoffs": ["Larger temporary drawdowns possible", "Needs strong risk tolerance"],
+        "nextAction": "Only choose this if you can hold through significant volatility"
+      }
+    ]
+  }
+}

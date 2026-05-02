@@ -1,0 +1,14 @@
+{
+  "type": "goal_summary",
+  "priority": 1,
+  "moduleId": "goal_summary-1",
+  "props": {
+    "name": "Priya",
+    "goal": "Long-term wealth creation",
+    "timeHorizon": "10+ years",
+    "monthlyAmount": "$150",
+    "emergencySavings": "1–3 months",
+    "riskTone": "Balanced",
+    "tone": "encouraging"
+  }
+}

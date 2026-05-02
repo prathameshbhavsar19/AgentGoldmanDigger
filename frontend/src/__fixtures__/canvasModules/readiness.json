@@ -1,0 +1,15 @@
+{
+  "type": "financial_readiness",
+  "priority": 2,
+  "moduleId": "financial_readiness-2",
+  "props": {
+    "score": "balanced",
+    "label": "Ready for a balanced start",
+    "factors": [
+      { "key": "Emergency savings",    "status": "ok",   "note": "1–3 months — building, but adequate to start" },
+      { "key": "Investment capacity",  "status": "ok",   "note": "$150/mo is a strong beginner SIP amount" },
+      { "key": "Time horizon",         "status": "good", "note": "10+ years allows full market cycles" },
+      { "key": "Risk comfort",         "status": "ok",   "note": "Moderate — suits a diversified approach" }
+    ]
+  }
+}

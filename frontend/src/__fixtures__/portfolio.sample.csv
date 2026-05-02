@@ -1,0 +1,13 @@
+asset_name,asset_symbol,asset_type,quantity,market_value,currency,sector
+Apple Inc,AAPL,stock,10,1750.00,USD,Technology
+Microsoft Corp,MSFT,stock,5,2100.00,USD,Technology
+Vanguard S&P 500 ETF,VOO,etf,8,3800.00,USD,Broad Market
+iShares Core US Agg Bond ETF,AGG,etf,20,2000.00,USD,Fixed Income
+Amazon.com Inc,AMZN,stock,3,1200.00,USD,Consumer Discretionary
+Fidelity Contrafund,FCNTX,mutual_fund,50,5500.00,USD,Growth
+NVIDIA Corp,NVDA,stock,12,7200.00,USD,Technology
+Johnson & Johnson,JNJ,stock,15,2250.00,USD,Healthcare
+Berkshire Hathaway B,BRK.B,stock,7,3150.00,USD,Financial Services
+Vanguard Total International,VXUS,etf,30,1800.00,USD,International
+Gold ETF,GLD,etf,5,950.00,USD,Commodities
+US Treasury 10Y Bond ETF,IEF,etf,10,1050.00,USD,Fixed Income

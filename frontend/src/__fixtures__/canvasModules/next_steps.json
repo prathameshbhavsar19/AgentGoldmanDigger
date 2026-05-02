@@ -1,0 +1,13 @@
+{
+  "type": "next_steps",
+  "priority": 8,
+  "moduleId": "next_steps-8",
+  "props": {
+    "primary": { "label": "Select this path", "action": "select" },
+    "secondary": [
+      { "label": "Compare all options", "action": "compare" },
+      { "label": "Ask a follow-up",     "action": "follow-up" },
+      { "label": "Download report",     "action": "download" }
+    ]
+  }
+}
