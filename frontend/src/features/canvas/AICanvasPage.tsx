@@ -10,9 +10,8 @@ import { FollowUpComposer } from './FollowUpComposer'
 import { CompareDialog } from './actions/CompareDialog'
 import { downloadReport } from './actions/DownloadReport'
 import { Logo } from '../../components/brand/Logo'
-import Button from '../../components/ui/Button'
 import { copy } from '../../lib/copy'
-import { Download, Layers, Sparkles } from 'lucide-react'
+import { Layers, Sparkles } from 'lucide-react'
 
 // ─── Building shimmer ─────────────────────────────────────────────────────────
 
@@ -38,9 +37,9 @@ function BuildingShimmer() {
       </div>
 
       <div className="text-center">
-        <p className="text-base font-semibold text-ink mb-1">Building your personalised canvas…</p>
+        <p className="text-base font-semibold text-ink mb-1">Building your personalised strategy options…</p>
         <p className="text-xs text-ink-muted max-w-xs mx-auto">
-          Our AI demystifier is translating your analysis into plain language. This takes a moment.
+          Translating your research into clear, actionable strategy options. Almost there.
         </p>
       </div>
 
@@ -110,17 +109,6 @@ export default function AICanvasPage() {
             : copy.canvas.statusAnalyzing}
         </div>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          disabled={!isReady}
-          onClick={() => jobId && downloadReport(jobId)}
-          className="gap-1.5"
-          data-testid="btn-download"
-        >
-          <Download className="h-4 w-4" />
-          <span className="hidden md:inline">Download</span>
-        </Button>
       </header>
 
       {/* Body */}

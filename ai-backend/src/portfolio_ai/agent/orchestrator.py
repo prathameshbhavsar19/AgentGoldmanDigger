@@ -97,6 +97,7 @@ async def run_agent_job(
     holdings: list[dict] | None,
     langfuse_trace_id: str | None,
     push_event: Callable[[dict], Awaitable[None]],
+    langfuse_parent_span_id: str | None = None,
 ) -> FinalAnalysis:
     """Run the full senior-consultant ReAct agent and return structured FinalAnalysis.
 
@@ -114,7 +115,11 @@ async def run_agent_job(
 
     # Build callback list
     callbacks = []
-    lf_handler = get_callback_handler(trace_id, prompt_version=PROMPT_VERSION)
+    lf_handler = get_callback_handler(
+        trace_id,
+        parent_span_id=langfuse_parent_span_id,
+        prompt_version=PROMPT_VERSION,
+    )
     if lf_handler:
         callbacks.append(lf_handler)
 
