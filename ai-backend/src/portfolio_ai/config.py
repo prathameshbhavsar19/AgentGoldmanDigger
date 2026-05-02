@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Anthropic
     ANTHROPIC_API_KEY: str = ""
-    ANTHROPIC_MODEL: str = "claude-sonnet-4-6"
+    ANTHROPIC_MODEL: str = "claude-haiku-4-5"
 
     # Langfuse
     LANGFUSE_PUBLIC_KEY: str = ""

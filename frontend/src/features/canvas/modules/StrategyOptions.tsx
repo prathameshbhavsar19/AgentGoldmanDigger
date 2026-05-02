@@ -1,15 +1,10 @@
 /**
- * Strategy Options — risk-tinted expandable cards with allocation bars.
- *
- * Design:
- *  - Each option has a left-border tint: green (low), amber (moderate), red (high)
- *  - Click to expand: shows full details_md_plain, allocation bars, pros/cons, CTA
- *  - Glossary terms get dotted underline + tooltip
- *  - Framer-motion stagger on entry
+ * StrategyOptions — 3-column horizontal cards inspired by the reference design.
+ * Clicking a card opens a detail panel below the grid.
  */
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
+import { ArrowRight, CheckCircle2, AlertTriangle, Star } from 'lucide-react'
 import type { GlossaryTerm } from './Glossary'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -17,27 +12,39 @@ import type { GlossaryTerm } from './Glossary'
 export type RiskTint = 'low' | 'moderate' | 'high'
 
 export interface AllocationRow {
+  emoji?: string
   label: string
   percent: number
   monthly_amount?: string
+  color?: string
 }
 
 export interface StrategyOption {
   id: string
+  emoji?: string
   title: string
-  risk_level: string
-  risk_tint: RiskTint
-  summary_plain?: string
-  best_for_plain?: string
+  card_badge?: string
+  risk_tint?: RiskTint
+  risk_level?: string
+  risk_label?: string
+  comfort_label?: string
+  tagline?: string
+  what_is_it?: string
+  best_for?: string
+  main_tradeoff?: string
   allocation?: AllocationRow[]
+  wins?: string[]
+  watchouts?: string[]
+  one_liner?: string
+  // v1 legacy
+  risk?: string
+  summary_plain?: string
+  summary?: string
+  best_for_plain?: string
   details_md_plain?: string
   pros?: string[]
   cons?: string[]
   agent_guidance_plain?: string
-  // Legacy (old format)
-  risk?: string
-  summary?: string
-  pros_cons?: { pro: string; con: string }[]
 }
 
 interface StrategyOptionsProps {
@@ -45,302 +52,334 @@ interface StrategyOptionsProps {
   glossaryTerms?: GlossaryTerm[]
 }
 
-// ─── Risk tint helpers ───────────────────────────────────────────────────────
-
-const TINT_STYLES: Record<RiskTint, { border: string; bg: string; badge: string; bar: string }> = {
-  low: {
-    border: 'border-l-4 border-l-emerald-500',
-    bg: 'bg-emerald-50/40',
-    badge: 'bg-emerald-100 text-emerald-800',
-    bar: 'bg-emerald-500',
-  },
-  moderate: {
-    border: 'border-l-4 border-l-amber-500',
-    bg: 'bg-amber-50/40',
-    badge: 'bg-amber-100 text-amber-800',
-    bar: 'bg-amber-500',
-  },
-  high: {
-    border: 'border-l-4 border-l-rose-500',
-    bg: 'bg-rose-50/40',
-    badge: 'bg-rose-100 text-rose-800',
-    bar: 'bg-rose-500',
-  },
-}
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function resolveRiskTint(opt: StrategyOption): RiskTint {
   if (opt.risk_tint) return opt.risk_tint as RiskTint
   const rl = (opt.risk_level ?? opt.risk ?? '').toLowerCase()
   if (rl.includes('low')) return 'low'
-  if (rl.includes('medium-high') || rl.includes('high')) return 'high'
+  if (rl.includes('high')) return 'high'
   return 'moderate'
 }
 
-// ─── Allocation bar ───────────────────────────────────────────────────────────
+const TINT_BADGE: Record<RiskTint, string> = {
+  low:      'bg-emerald-100 text-emerald-800',
+  moderate: 'bg-amber-100 text-amber-800',
+  high:     'bg-rose-100 text-rose-800',
+}
 
-function AllocationBars({ allocation }: { allocation: AllocationRow[] }) {
+// ─── Stacked allocation bar (inside a card) ───────────────────────────────────
+
+function StackedBar({ allocation }: { allocation: AllocationRow[] }) {
+  const total = allocation.reduce((s, r) => s + r.percent, 0)
+  const SHADES = ['bg-[#003366]', 'bg-[#1a5276]', 'bg-[#7fb3d3]', 'bg-[#aed6f1]']
+  const summary = allocation.map(r => `${r.percent}% ${r.label}`).join(' · ')
+
   return (
-    <div className="space-y-2 my-4">
-      <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-2">Asset Allocation</p>
-      {allocation.map((row, i) => (
-        <div key={i}>
-          <div className="flex items-center justify-between text-xs mb-1">
-            <span className="text-ink truncate max-w-[60%]">{row.label}</span>
-            <span className="text-ink-muted font-medium">
-              {row.percent}%{row.monthly_amount ? ` · ${row.monthly_amount}` : ''}
-            </span>
-          </div>
-          <div className="h-1.5 rounded-full bg-[var(--bg-subtle)] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-brand"
-              initial={{ width: 0 }}
-              animate={{ width: `${row.percent}%` }}
-              transition={{ duration: 0.6, delay: i * 0.08 }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="mt-3">
+      {/* Stacked bar */}
+      <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+        {allocation.map((row, i) => (
+          <motion.div
+            key={i}
+            className={`${SHADES[i % SHADES.length]} rounded-full`}
+            initial={{ width: 0 }}
+            animate={{ width: `${(row.percent / total) * 100}%` }}
+            transition={{ duration: 0.6, delay: i * 0.08, ease: 'easeOut' }}
+          />
+        ))}
+      </div>
+      {/* Summary text */}
+      <p className="text-[10px] text-ink-muted mt-1.5 leading-tight truncate">{summary}</p>
     </div>
   )
 }
 
-// ─── Glossary tooltip ────────────────────────────────────────────────────────
+// ─── Detail panel allocation (right column) ──────────────────────────────────
 
-function GlossaryTooltip({ term, children }: { term: GlossaryTerm; children: string }) {
-  const [show, setShow] = useState(false)
+function AllocationBreakdown({ allocation }: { allocation: AllocationRow[] }) {
+  const SHADES = ['bg-[#003366]', 'bg-[#1a5276]', 'bg-[#7fb3d3]', 'bg-[#aed6f1]']
   return (
-    <span className="relative inline-block">
-      <span
-        className="border-b border-dotted border-brand/60 cursor-help text-ink"
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        onFocus={() => setShow(true)}
-        onBlur={() => setShow(false)}
-        tabIndex={0}
-        aria-describedby={`tt-${term.term}`}
-      >
-        {children}
-      </span>
-      <AnimatePresence>
-        {show && (
-          <motion.div
-            id={`tt-${term.term}`}
-            role="tooltip"
-            initial={{ opacity: 0, y: 4, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-            className="absolute bottom-full left-0 z-50 mb-2 w-60 p-2.5 rounded-lg shadow-lg bg-[var(--bg-elev)] border border-[var(--border)] text-xs text-ink leading-relaxed"
-          >
-            <p className="font-semibold mb-0.5">{term.term}</p>
-            <p className="text-ink-muted">{term.plain_definition}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </span>
+    <div>
+      <p className="text-[11px] font-bold text-ink-muted uppercase tracking-widest mb-3">Allocation breakdown</p>
+      <div className="space-y-3">
+        {allocation.map((row, i) => (
+          <div key={i}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-sm text-ink">{row.label}</span>
+              <span className="text-sm font-bold text-ink">{row.percent}%</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+              <motion.div
+                className={`h-full rounded-full ${SHADES[i % SHADES.length]}`}
+                initial={{ width: 0 }}
+                animate={{ width: `${row.percent}%` }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
-// ─── Simple prose renderer with glossary term highlighting ───────────────────
+// ─── Strategy card ────────────────────────────────────────────────────────────
 
-function PlainText({ text, glossaryTerms }: { text: string; glossaryTerms?: GlossaryTerm[] }) {
-  if (!glossaryTerms?.length) {
-    return <span>{text}</span>
-  }
-  // Replace jargon terms with tooltip-wrapped spans
-  const parts: React.ReactElement[] = []
-  let remaining = text
-  let key = 0
-
-  for (const term of glossaryTerms) {
-    const idx = remaining.toLowerCase().indexOf(term.term.toLowerCase())
-    if (idx === -1) continue
-    if (idx > 0) parts.push(<span key={key++}>{remaining.slice(0, idx)}</span>)
-    parts.push(
-      <GlossaryTooltip key={key++} term={term}>
-        {remaining.slice(idx, idx + term.term.length)}
-      </GlossaryTooltip>
-    )
-    remaining = remaining.slice(idx + term.term.length)
-  }
-  if (remaining) parts.push(<span key={key++}>{remaining}</span>)
-  return <>{parts}</>
-}
-
-// ─── Option card ────────────────────────────────────────────────────────────
-
-function OptionCard({
+function StrategyCard({
   opt,
   index,
-  expanded,
-  onToggle,
-  glossaryTerms,
+  isSelected,
+  isRecommended,
+  onClick,
 }: {
   opt: StrategyOption
   index: number
-  expanded: boolean
-  onToggle: () => void
-  glossaryTerms?: GlossaryTerm[]
+  isSelected: boolean
+  isRecommended: boolean
+  onClick: () => void
 }) {
   const tint = resolveRiskTint(opt)
-  const styles = TINT_STYLES[tint]
-  const summary = opt.summary_plain ?? opt.summary ?? ''
-  const details = opt.details_md_plain ?? ''
-  const pros = opt.pros ?? []
-  const cons = opt.cons ?? []
-  const guidance = opt.agent_guidance_plain ?? ''
+  const riskLabel = opt.risk_label ?? opt.risk_level ?? opt.risk ?? ''
+  const comfortLabel = opt.comfort_label ?? (tint === 'low' ? 'Low stress' : tint === 'moderate' ? 'Medium stress' : 'High stress')
+  const cardBadge = opt.card_badge ?? (isRecommended ? 'AI Recommended' : '')
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.1 }}
-      className={`rounded-xl border border-[var(--border)] shadow-[0_1px_8px_rgba(0,0,0,0.06)] overflow-hidden ${styles.border} ${expanded ? styles.bg : ''} transition-colors duration-200`}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
+      onClick={onClick}
+      className={`relative rounded-2xl border-2 bg-white cursor-pointer transition-all duration-200 p-5 flex flex-col gap-3
+        ${isSelected
+          ? 'border-[#003366] shadow-[0_0_0_3px_rgba(0,51,102,0.12)] shadow-lg'
+          : 'border-[var(--border)] hover:border-[#003366]/40 hover:shadow-md'}
+      `}
       data-testid={`strategy-option-${opt.id}`}
     >
-      {/* Header — always visible */}
-      <button
-        onClick={onToggle}
-        className="w-full text-left px-5 py-4 flex items-start gap-3 hover:bg-[var(--bg-subtle)] transition-colors duration-150 cursor-pointer"
-        aria-expanded={expanded}
-        aria-controls={`option-detail-${opt.id}`}
-      >
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-sm font-semibold text-ink">{opt.title}</span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${styles.badge}`}>
-              {opt.risk_level ?? opt.risk}
-            </span>
+      {/* Recommended checkmark */}
+      {isSelected && isRecommended && (
+        <div className="absolute top-4 right-4 h-6 w-6 rounded-full bg-[#003366] flex items-center justify-center">
+          <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+        </div>
+      )}
+      {isSelected && !isRecommended && (
+        <div className="absolute top-4 right-4">
+          <ArrowRight className="h-5 w-5 text-[#003366]" />
+        </div>
+      )}
+      {!isSelected && (
+        <div className="absolute top-4 right-4">
+          <ArrowRight className="h-5 w-5 text-ink-muted" />
+        </div>
+      )}
+
+      {/* Badge */}
+      {cardBadge && (
+        <div className="flex items-center gap-1">
+          <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full
+            ${isRecommended
+              ? 'bg-[#003366] text-white'
+              : `${TINT_BADGE[tint]}`}
+          `}>
+            {isRecommended && <Star className="h-3 w-3" />}
+            {cardBadge}
+          </span>
+        </div>
+      )}
+
+      {/* Title + tagline */}
+      <div>
+          <h4 className="font-bold text-brand text-base leading-tight mb-1">{opt.title}</h4>
+        <p className="text-sm text-ink-muted leading-snug">
+          {opt.tagline ?? opt.summary_plain ?? opt.summary ?? ''}
+        </p>
+      </div>
+
+      {/* Allocation bar */}
+      {opt.allocation && opt.allocation.length > 0 && (
+        <StackedBar allocation={opt.allocation} />
+      )}
+
+      {/* Risk + Comfort */}
+      <div className="grid grid-cols-2 gap-2 mt-auto pt-1">
+        <div className="rounded-lg bg-[var(--bg-subtle)] px-3 py-2">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-0.5">Risk</p>
+          <p className="text-xs font-semibold text-ink">{riskLabel.replace(/[🟢🟡🔴]/g, '').trim()}</p>
+        </div>
+        <div className="rounded-lg bg-[var(--bg-subtle)] px-3 py-2">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-0.5">Comfort</p>
+          <p className="text-xs font-semibold text-ink">{comfortLabel}</p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── Detail panel ─────────────────────────────────────────────────────────────
+
+function DetailPanel({ opt }: { opt: StrategyOption }) {
+  const wins = opt.wins ?? opt.pros ?? []
+  const watchouts = opt.watchouts ?? opt.cons ?? []
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.3 }}
+      className="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] overflow-hidden shadow-md"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
+
+        {/* Left col — why + best_for + tradeoff */}
+        <div className="p-5 space-y-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Why this option exists</p>
+            <h4 className="font-bold text-brand text-lg mb-2">{opt.title}</h4>
+            <p className="text-sm text-ink-muted leading-relaxed">
+              {opt.what_is_it ?? opt.details_md_plain ?? opt.summary_plain ?? ''}
+            </p>
           </div>
-          {summary && (
-            <p className="text-xs text-ink-muted leading-relaxed line-clamp-2">{summary}</p>
+
+          <div className="grid grid-cols-2 gap-3">
+            {(opt.best_for ?? opt.best_for_plain) && (
+              <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1.5">Best for</p>
+                <p className="text-xs text-ink leading-relaxed">{opt.best_for ?? opt.best_for_plain}</p>
+              </div>
+            )}
+            {opt.main_tradeoff && (
+              <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1.5">Main tradeoff</p>
+                <p className="text-xs text-ink leading-relaxed">{opt.main_tradeoff}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Wins + Watchouts */}
+          {(wins.length > 0 || watchouts.length > 0) && (
+            <div className="space-y-2">
+              {wins.map((w, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-ink leading-relaxed">{w}</p>
+                </div>
+              ))}
+              {watchouts.map((w, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-ink leading-relaxed">{w}</p>
+                </div>
+              ))}
+            </div>
           )}
-          {opt.best_for_plain && (
-            <p className="text-xs text-ink-faint mt-0.5 italic">{opt.best_for_plain}</p>
+
+          {/* Decision framing */}
+          {opt.one_liner && (
+            <div className="rounded-xl border border-[#003366]/15 bg-[#003366]/5 p-3">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-[#003366]/60 mb-1">Decision framing</p>
+              <p className="text-sm text-[#003366] font-medium leading-relaxed">{opt.one_liner}</p>
+            </div>
           )}
         </div>
-        <ChevronDown
-          className={`h-4 w-4 text-ink-muted flex-shrink-0 mt-0.5 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
-        />
-      </button>
 
-      {/* Expanded panel */}
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            id={`option-detail-${opt.id}`}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-5 space-y-4">
-              {/* Allocation bars */}
-              {opt.allocation && opt.allocation.length > 0 && (
-                <AllocationBars allocation={opt.allocation} />
-              )}
+        {/* Right col — allocation + CTA */}
+        <div className="p-5 flex flex-col gap-5">
+          {opt.allocation && opt.allocation.length > 0 && (
+            <AllocationBreakdown allocation={opt.allocation} />
+          )}
 
-              {/* Full details */}
-              {details && (
-                <div className="text-xs text-ink-muted leading-relaxed whitespace-pre-line">
-                  <PlainText text={details} glossaryTerms={glossaryTerms} />
-                </div>
-              )}
-
-              {/* Pros / Cons */}
-              {(pros.length > 0 || cons.length > 0) && (
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {pros.length > 0 && (
-                    <div>
-                      <p className="text-[10px] font-semibold text-emerald-700 uppercase tracking-wide mb-1.5">Pros</p>
-                      <ul className="space-y-1">
-                        {pros.map((p, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-ink-muted">
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                            {p}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {cons.length > 0 && (
-                    <div>
-                      <p className="text-[10px] font-semibold text-rose-700 uppercase tracking-wide mb-1.5">Cons</p>
-                      <ul className="space-y-1">
-                        {cons.map((c, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-ink-muted">
-                            <XCircle className="h-3.5 w-3.5 text-rose-500 flex-shrink-0 mt-0.5" />
-                            {c}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Agent guidance */}
-              {guidance && (
-                <div className="p-3 rounded-lg bg-brand/5 border border-brand/10">
-                  <p className="text-xs text-brand font-medium mb-0.5">Advisor guidance</p>
-                  <p className="text-xs text-ink-muted leading-relaxed">{guidance}</p>
-                </div>
-              )}
-
-              {/* CTA */}
+          {/* AI Recommendation note + CTA */}
+          <div className="mt-auto rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-4 space-y-3">
+            {opt.agent_guidance_plain && (
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">AI Recommendation</p>
+                <p className="text-xs text-ink-muted leading-relaxed">{opt.agent_guidance_plain}</p>
+              </div>
+            )}
+            <div className="flex gap-2">
               <button
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand text-white text-xs font-semibold hover:bg-brand/90 transition-colors cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl bg-[#003366] text-white text-sm font-semibold hover:bg-[#004488] transition-colors cursor-pointer flex items-center justify-center gap-2"
                 data-testid={`select-option-${opt.id}`}
-                onClick={() => {
-                  /* handled by parent if needed */
-                }}
               >
-                Select this path
-                <ArrowRight className="h-3.5 w-3.5" />
+                Choose plan
+                <ArrowRight className="h-4 w-4" />
               </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      </div>
     </motion.div>
   )
 }
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
-export function StrategyOptions({ options, glossaryTerms }: StrategyOptionsProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-
-  const toggle = (id: string) => setExpandedId(prev => (prev === id ? null : id))
+export function StrategyOptions({ options }: StrategyOptionsProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   if (!options?.length) return null
+
+  const selectedOpt = options.find(o => o.id === selectedId) ?? null
+
+  // Determine which is the "recommended" one — first option, or the one badged "AI Recommended"
+  const recommendedId = options.find(o =>
+    o.card_badge?.toLowerCase().includes('recommended')
+  )?.id ?? options[0]?.id
+
+  function handleCardClick(id: string) {
+    setSelectedId(prev => prev === id ? null : id)
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.25 }}
+      transition={{ duration: 0.4, delay: 0.15 }}
       data-testid="strategy-options-module"
     >
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-ink">Your Strategy Options</h3>
-        <span className="text-xs text-ink-muted">{options.length} paths</span>
+      {/* Section header */}
+      <div className="mb-5">
+        <div className="flex items-baseline justify-between mb-1">
+          <h2 className="text-2xl font-bold text-brand">Recommended strategy options</h2>
+          <span className="text-xs text-ink-muted bg-[var(--bg-subtle)] px-2 py-1 rounded-full hidden sm:block">
+            {options.length} paths
+          </span>
+        </div>
+        <p className="text-sm text-ink-muted leading-relaxed max-w-xl">
+          Each route shows the full picture — how your money is split, how stressful it is to hold,
+          and the honest tradeoff — so you can choose with confidence.
+        </p>
       </div>
 
-      {/* Mobile: 1 col, sm: 1 col, md+: depends on count */}
-      <div className={`grid gap-4 ${options.length <= 2 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+      {/* 3-column card grid */}
+      <div className={`grid gap-4 mb-4 ${
+        options.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+        options.length >= 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+        'grid-cols-1'
+      }`}>
         {options.map((opt, i) => (
-          <OptionCard
+          <StrategyCard
             key={opt.id}
             opt={opt}
             index={i}
-            expanded={expandedId === opt.id}
-            onToggle={() => toggle(opt.id)}
-            glossaryTerms={glossaryTerms}
+            isSelected={selectedId === opt.id}
+            isRecommended={opt.id === recommendedId}
+            onClick={() => handleCardClick(opt.id)}
           />
         ))}
       </div>
+
+      {/* Detail panel below grid */}
+      <AnimatePresence>
+        {selectedOpt && (
+          <DetailPanel
+            key={selectedOpt.id}
+            opt={selectedOpt}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

@@ -6,7 +6,7 @@ import { eventBus } from "./eventBus.js";
 import { normalizeEvent, NODE_INTERNAL_TYPES } from "./eventNormalizer.js";
 import { canvasComposer } from "./canvasComposer.js";
 import { buildCanvasFromAnalysis, type PythonAnalysis } from "./canvasLLM.js";
-import { startJobTrace, type UserJsonSnapshot } from "./langfuseClient.js";
+import { getOrCreateTrace, startPythonAgentSpan, lf32, lf16, type UserJsonSnapshot } from "./langfuseClient.js";
 import { backoff, sleep } from "../utils/timing.js";
 
 export class PythonError extends Error {
@@ -105,8 +105,10 @@ export const pythonClient = {
   async startJob(input: StartJobInput): Promise<{ job_id: string }> {
     const url = `${cfg.PYTHON_HTTP_BASE}/ai/jobs`;
 
-    // Start root Langfuse trace — Python will join via header
-    startJobTrace(input.jobId, input.userJson);
+    // Create root trace + open python_agent_phase child span.
+    // Span ID is forwarded to Python so its LangChain traces nest under it.
+    getOrCreateTrace(input.jobId, input.userJson);
+    const pythonSpan = startPythonAgentSpan(input.jobId, input.userJson);
 
     const body = {
       job_id: input.jobId,
@@ -118,13 +120,18 @@ export const pythonClient = {
       },
     };
 
+    const headers: Record<string, string> = {
+      "content-type": "application/json",
+      "x-job-id": input.jobId,
+      // Normalized 32-char hex IDs so Python Langfuse SDK accepts them.
+      "x-langfuse-trace-id": lf32(input.jobId),
+    };
+    // Send 16-char span ID (Langfuse span ID requirement)
+    if (pythonSpan) headers["x-langfuse-parent-span-id"] = lf16(pythonSpan.spanId);
+
     const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-job-id": input.jobId,
-        "x-langfuse-trace-id": input.jobId,
-      },
+      headers,
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(15_000),
     });
@@ -144,7 +151,7 @@ export const pythonClient = {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-langfuse-trace-id": jobId,
+        "x-langfuse-trace-id": lf32(jobId),
       },
       body: JSON.stringify({ question, user_json: userJson ?? {} }),
       signal: AbortSignal.timeout(15_000),
@@ -161,6 +168,9 @@ export const pythonClient = {
     let lastSeq = 0;
     let terminated = false;
     const MAX_ATTEMPTS = 8;
+
+    // Retrieve the python span handle opened in startJob so we can end it
+    const pythonSpan = startPythonAgentSpan(jobId, userJson);
 
     const fail = async (reason: string) => {
       if (terminated) return;
@@ -189,15 +199,30 @@ export const pythonClient = {
       if (terminated) return;
       const wsUrl = lastSeq > 0 ? `${url}?lastEventId=${lastSeq}` : url;
       const ws = new WebSocket(wsUrl);
+      let openedAt = 0;
 
       ws.on("open", () => {
         logger.info({ jobId }, "Connected to Python WS events");
-        attempt = 0;
+        openedAt = Date.now();
+        // Only reset retry counter if we had a stable previous connection (>5s)
+        // Never reset on a fresh open — prevents infinite tight-loop
       });
 
       ws.on("message", (data) => {
         try {
           const raw = JSON.parse(data.toString()) as Record<string, unknown>;
+
+          // Heartbeat — keep alive, no action needed
+          if ((raw as any).type === "heartbeat") return;
+
+          // Python reports job not found — treat as permanent failure
+          if ((raw as any).type === "error") {
+            logger.error({ jobId, msg: (raw as any).message }, "Python WS job error");
+            fail((raw as any).message as string ?? "Python job not found");
+            try { ws.close(); } catch { /* ignore */ }
+            return;
+          }
+
           const normalized = normalizeEvent(raw, jobId);
           if (!normalized) return;
 
@@ -213,6 +238,8 @@ export const pythonClient = {
             lastSeq = eventRow.seq;
             const enriched = { ...normalized, event_id: eventRow.seq };
             eventBus.publish(jobId, enriched);
+            // Got real data — this is a healthy connection, reset retry counter
+            attempt = 0;
           }
 
           // Terminal events from Python
@@ -225,6 +252,8 @@ export const pythonClient = {
           // Phase A terminal event — trigger Node canvas LLM (Phase B)
           if (normalized.event_type === "python_analysis_completed" && !terminated) {
             terminated = true; // stop reconnects; canvas LLM runs independently
+            // Close the python_agent_phase Langfuse span
+            pythonSpan?.end({ status: "completed" });
             const analysis: PythonAnalysis = {
               user_summary_md: (raw["user_summary_md"] as string) ?? "",
               portfolio_diagnosis_md: (raw["portfolio_diagnosis_md"] as string) ?? "",
@@ -240,17 +269,28 @@ export const pythonClient = {
         }
       });
 
-      ws.on("close", () => {
+      ws.on("close", (code) => {
         if (terminated) {
           logger.info({ jobId }, "Python WS closed (terminated)");
           return;
         }
+
+        // Code 4004 = Python says job not found (service restarted, job lost)
+        // Code 1000 = clean normal close — job is actually done
+        if (code === 4004 || code === 1000) {
+          logger.error({ jobId, code }, "Python WS closed with terminal code — failing job");
+          fail(`Python WS closed with code ${code} — job lost or completed without result`);
+          return;
+        }
+
         if (attempt >= MAX_ATTEMPTS) {
           logger.error({ jobId, attempt }, "Python WS exceeded max reconnects");
           fail("Python WS reconnect limit exceeded");
           return;
         }
-        logger.info({ jobId, attempt }, "Python WS closed, scheduling reconnect");
+
+        const connectedMs = openedAt > 0 ? Date.now() - openedAt : 0;
+        logger.info({ jobId, attempt, connectedMs }, "Python WS closed, scheduling reconnect");
         const delay = backoff(attempt++);
         sleep(delay).then(connect);
       });

@@ -26,7 +26,12 @@ class StartJobRequest(BaseModel):
     meta: dict[str, Any] = {}
 
 
-async def _run_job(job_id: str, req: StartJobRequest, trace_id: str | None) -> None:
+async def _run_job(
+    job_id: str,
+    req: StartJobRequest,
+    trace_id: str | None,
+    parent_span_id: str | None = None,
+) -> None:
     await job_store.set_running(job_id)
     try:
 
@@ -39,6 +44,7 @@ async def _run_job(job_id: str, req: StartJobRequest, trace_id: str | None) -> N
             user_json=req.user_json,
             holdings=req.holdings,
             langfuse_trace_id=trace_id,
+            langfuse_parent_span_id=parent_span_id,
             push_event=push_event,
         )
 
@@ -84,13 +90,14 @@ async def _run_job(job_id: str, req: StartJobRequest, trace_id: str | None) -> N
 async def create_job(request: Request, payload: StartJobRequest, background_tasks: BackgroundTasks):
     """Start a new AI analysis job."""
     trace_id = request.headers.get("x-langfuse-trace-id") or payload.job_id
+    parent_span_id = request.headers.get("x-langfuse-parent-span-id") or None
 
     existing = job_store.get(payload.job_id)
     if existing and existing.status in (JobStatus.RUNNING, JobStatus.COMPLETED):
         return {"job_id": payload.job_id, "status": existing.status, "message": "Job already in progress"}
 
     await job_store.create(payload.job_id)
-    background_tasks.add_task(_run_job, payload.job_id, payload, trace_id)
+    background_tasks.add_task(_run_job, payload.job_id, payload, trace_id, parent_span_id)
 
     logger.info("Started job %s (trace=%s)", payload.job_id, trace_id)
     return {"job_id": payload.job_id, "status": "queued"}

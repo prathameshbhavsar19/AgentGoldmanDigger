@@ -45,13 +45,25 @@ _PIPELINE_STEPS = [
     ("step-1", "Reading your financial profile…"),
     ("step-2", "Diagnosing your current portfolio…"),
     ("step-3", "Scanning current macro landscape…"),
-    ("step-4", "Investigating the key market developments…"),
-    ("step-5", "Mapping market shocks to your specific holdings…"),
+    ("step-4", "Investigating key market developments…"),
+    ("step-5", "Mapping market shocks to your holdings…"),
     ("step-6", "Stress-testing against historical scenarios…"),
     ("step-7", "Reading fund factsheets for hidden charges…"),
     ("step-8", "Projecting whether your goal is reachable…"),
     ("step-9", "Drafting your personalised strategy options…"),
 ]
+
+_STEP_SUMMARIES = {
+    "step-1": "Profile understood.",
+    "step-2": "Portfolio gaps identified.",
+    "step-3": "Macro backdrop assessed.",
+    "step-4": "Key market signals noted.",
+    "step-5": "Holdings risk mapped.",
+    "step-6": "Stress tests complete.",
+    "step-7": "Fee drag calculated.",
+    "step-8": "Goal gap projected.",
+    "step-9": "Strategy options drafted.",
+}
 
 
 class StreamingActivityCallback(AsyncCallbackHandler):
@@ -78,6 +90,17 @@ class StreamingActivityCallback(AsyncCallbackHandler):
             logger.warning("Failed to push activity event %s: %s", event.get("type"), exc)
 
     async def _advance_step(self) -> None:
+        # Complete the current step before advancing
+        if self._current_step_id:
+            summary = _STEP_SUMMARIES.get(self._current_step_id, "Complete.")
+            await self._emit(
+                {
+                    "type": "activity_step_completed",
+                    "stepId": self._current_step_id,
+                    "summary": summary,
+                    "ts": int(time.time() * 1000),
+                }
+            )
         if self._step_idx < len(_PIPELINE_STEPS):
             step_id, label = _PIPELINE_STEPS[self._step_idx]
             self._current_step_id = step_id
@@ -175,11 +198,12 @@ class StreamingActivityCallback(AsyncCallbackHandler):
             await self._advance_step()
 
         if self._current_step_id:
+            summary = _STEP_SUMMARIES.get(self._current_step_id, "Research complete.")
             await self._emit(
                 {
                     "type": "activity_step_completed",
                     "stepId": self._current_step_id,
-                    "summary": "Research complete — drafting your options.",
+                    "summary": summary,
                     "ts": int(time.time() * 1000),
                 }
             )

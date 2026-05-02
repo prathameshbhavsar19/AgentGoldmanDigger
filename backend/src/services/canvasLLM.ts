@@ -1,7 +1,7 @@
 /**
  * Node.js canvas demystifier + builder LLM.
  *
- * Receives Python's structured FinalAnalysis JSON, calls claude-sonnet-4-6 to:
+ * Receives Python's structured FinalAnalysis JSON, calls the configured LLM (claude-haiku-4-5) to:
  *  1. Demystify financial jargon in each option (inline replacements + glossary extraction)
  *  2. Structure the result into frontend-renderable canvas modules
  *
@@ -11,7 +11,7 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { cfg } from "../config.js";
 import { CANVAS_DEMYSTIFIER_SYSTEM, CANVAS_PROMPT_VERSION } from "./canvasLLM.prompts.js";
-import { startJobTrace, type UserJsonSnapshot } from "./langfuseClient.js";
+import { startCanvasLLMSpan, type UserJsonSnapshot } from "./langfuseClient.js";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -76,7 +76,7 @@ function extractJson(text: string): Record<string, unknown> {
   const fenceMatch = /```(?:json)?\s*\n([\s\S]*?)\n```/.exec(text);
   if (fenceMatch) {
     try {
-      return JSON.parse(fenceMatch[1]);
+      return JSON.parse(fenceMatch[1]!);
     } catch {
       /* fall through */
     }
@@ -106,7 +106,7 @@ function extractJson(text: string): Record<string, unknown> {
     if (text[i] === "{") indices.push(i);
   }
   for (let i = indices.length - 1; i >= 0; i--) {
-    const candidate = scanJsonObject(text, indices[i]);
+    const candidate = scanJsonObject(text, indices[i]!);
     if (!candidate) continue;
     try {
       return JSON.parse(candidate);
@@ -196,21 +196,22 @@ export async function buildCanvasFromAnalysis(
     // requests with "Streaming is required for operations >10 min".
     // LangChain accumulates the stream and returns the full message.
     streaming: true,
-    maxTokens: 32000,
+    maxTokens: 8000,
     temperature: 0,
   });
 
-  // Wire up Langfuse if configured
+  // Wire up Langfuse — canvas LLM runs as a child span of the root trace
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let callbacks: any[] = [];
+  let canvasSpan: ReturnType<typeof startCanvasLLMSpan> = null;
   try {
     if (cfg.LANGFUSE_PUBLIC_KEY && cfg.LANGFUSE_SECRET_KEY) {
-      const { CallbackHandler } = require("langfuse-langchain") as typeof import("langfuse-langchain");
-      const trace = startJobTrace(jobId, userJson);
-      if (trace) {
+      const { CallbackHandler } = await import("langfuse-langchain");
+      canvasSpan = startCanvasLLMSpan(jobId, userJson);
+      if (canvasSpan) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handler = new (CallbackHandler as any)({
-          root: trace,
+          root: canvasSpan,
           metadata: { span_name: "node_canvas_llm", prompt_version: CANVAS_PROMPT_VERSION },
         });
         callbacks = [handler];
@@ -278,5 +279,9 @@ export async function buildCanvasFromAnalysis(
   const raw = extractJson(rawText);
   const modules = (raw.modules as CanvasModule[]) ?? [];
   modules.sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99));
+
+  // Close the canvas_llm span in Langfuse
+  try { canvasSpan?.end(); } catch { /* ignore */ }
+
   return modules;
 }

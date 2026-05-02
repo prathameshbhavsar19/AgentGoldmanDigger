@@ -97,6 +97,7 @@ async def run_agent_job(
     holdings: list[dict] | None,
     langfuse_trace_id: str | None,
     push_event: Callable[[dict], Awaitable[None]],
+    langfuse_parent_span_id: str | None = None,
 ) -> FinalAnalysis:
     """Run the full senior-consultant ReAct agent and return structured FinalAnalysis.
 
@@ -114,7 +115,11 @@ async def run_agent_job(
 
     # Build callback list
     callbacks = []
-    lf_handler = get_callback_handler(trace_id, prompt_version=PROMPT_VERSION)
+    lf_handler = get_callback_handler(
+        trace_id,
+        parent_span_id=langfuse_parent_span_id,
+        prompt_version=PROMPT_VERSION,
+    )
     if lf_handler:
         callbacks.append(lf_handler)
 
@@ -124,7 +129,7 @@ async def run_agent_job(
     llm = ChatAnthropic(
         model=settings.ANTHROPIC_MODEL,
         api_key=settings.ANTHROPIC_API_KEY,
-        max_tokens=32000,
+        max_tokens=16000,
         temperature=0,
     )
 
@@ -139,8 +144,11 @@ async def run_agent_job(
         "\n\nPlease conduct your full research pipeline and produce the structured analysis."
     )
 
+    # parallel_tool_calls=True lets the model return multiple tool_use blocks
+    # in a single step; LangGraph executes them concurrently, cutting wall-clock
+    # time significantly when several independent lookups are needed.
     agent = create_react_agent(
-        llm.bind_tools(ALL_TOOLS),
+        llm.bind_tools(ALL_TOOLS, parallel_tool_calls=True),
         ALL_TOOLS,
         prompt=system_prompt,
     )
